@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { completeQuiz, nextQuestion, previousQuestion } from "@/Redux/features/quizSlices";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export default function QuizControl() {
   const { currentQuestionIndex, userAnswers, quizCompleted } = useAppSelector(
@@ -10,7 +10,7 @@ export default function QuizControl() {
   );
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const isAnswered = userAnswers[currentQuestionIndex] !== null;
 

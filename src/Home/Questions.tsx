@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import { setAnswer, completeQuiz } from "@/Redux/features/quizSlices";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
