@@ -36,7 +36,13 @@ export default function QuizControl() {
         text: "You will be redirected to the summary page.",
         icon: "success",
         timer: 1000,
-        showConfirmButton: false,
+        showConfirmButton: true,
+        buttonsStyling: true,
+        customClass: {
+          confirmButton: "bg-green-600 text-white hover:bg-green-700",
+        },
+        
+
       });
     } else {
       alert("Please select an answer before completing the quiz.");
@@ -61,7 +67,7 @@ export default function QuizControl() {
               : "mb-2 p-2 flex flex-row items-center w-20 opacity-50 cursor-not-allowed"
           }
           onClick={handleNext}
-          disabled={quizCompleted}
+          disabled={quizCompleted && !isAnswered}
         >
           Next
         </Button>

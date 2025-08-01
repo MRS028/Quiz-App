@@ -1,6 +1,8 @@
-import { quizData } from "@/Home/quizData";
-import { createSlice,type PayloadAction } from "@reduxjs/toolkit";
+import { quizData1, quizData2,quizData3 } from "@/Home/quizData";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+const allQuizData = [quizData1, quizData2, quizData3];
+const quizData = allQuizData[Math.floor(Math.random() * allQuizData.length)];
 interface QuizState {
   questions: typeof quizData;
   currentQuestionIndex: number;

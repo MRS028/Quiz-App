@@ -27,15 +27,15 @@ export default function Questions() {
 
   return (
     <div className="flex justify-center items-center mt-16 px-2">
-      <Card className="w-full max-w-2xl mx-auto mt-10 p-6 shadow-lg space-y-6">
+      <Card className="w-full max-w-2xl mx-auto mt-10 p-3 md:p-6 shadow-lg space-y-6">
         {/* Timer and Progress Bar */}
         <div>
           <Timer />
         </div>
 
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Question {currentQuestion.id}: {currentQuestion.question}
+          <CardTitle className="text-lg md:text-2xl text-left font-bold ">
+            {currentQuestion.id}. {currentQuestion.question}
           </CardTitle>
         </CardHeader>
 

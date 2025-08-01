@@ -1,12 +1,18 @@
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/Redux/hooks";
+import { resetQuiz } from "@/Redux/features/quizSlices";
+import { resetTimer } from "@/Redux/features/timerSlice";
 
 export default function Home() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleStartQuiz = () => {
     navigate("/quiz");
+    dispatch(resetQuiz());
+    dispatch(resetTimer());
   };
 
   return (
