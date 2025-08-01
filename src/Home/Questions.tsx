@@ -26,7 +26,7 @@ export default function Questions() {
   };
 
   return (
-    <div className="flex justify-center items-center mt-20 px-2">
+    <div className="flex justify-center items-center mt-16 px-2">
       <Card className="w-full max-w-2xl mx-auto mt-10 p-6 shadow-lg space-y-6">
         {/* Timer and Progress Bar */}
         <div>

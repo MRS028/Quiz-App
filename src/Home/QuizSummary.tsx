@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { resetQuiz } from "@/Redux/features/quizSlices";
+import { resetTimer } from "@/Redux/features/timerSlice";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
@@ -52,9 +53,11 @@ export default function QuizSummary() {
   // ✅ Get rating label & color
   const rating = getRatingStatus(percentage);
   const handleReset = () => {
-    // Reset quiz state logic here, e.g., dispatch resetQuiz action
     dispatch(resetQuiz());
-    window.location.reload(); // Reload the page to reset the quiz
+    dispatch(resetTimer());
+    localStorage.removeItem("quizState"); 
+    localStorage.removeItem("quizStartTime");
+    window.location.reload(); 
 
   };
 
@@ -98,7 +101,7 @@ export default function QuizSummary() {
           {/* Tips */}
           <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
             <p className="font-semibold text-yellow-700 mb-2">💡 Tips for Improvement:</p>
-            <ul className=" list-inside text-gray-700 space-y-1">
+            <ul className="text-sm list-inside text-gray-700 space-y-1">
               {tips.map((tip, index) => (
                 <li key={index}>{tip}</li>
               ))}
@@ -113,10 +116,10 @@ export default function QuizSummary() {
       </Card>
       
     </div>
-    <div>
+    <div className=" mb-2">
       <p className="text-center text-gray-600 mt-4">
         Want to try again?{" "}
-        <Link to="/" onClick={handleReset} className="text-blue-500">
+        <Link to="/" onClick={handleReset} className="text-green-500">
           Start a new quiz
         </Link>
       </p>
