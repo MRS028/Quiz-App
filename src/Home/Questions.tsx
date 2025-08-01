@@ -52,7 +52,7 @@ export default function Questions() {
           ))}
         </CardContent>
 
-        <div className="mt-6">
+        <div>
           <QuizControl />
         </div>
       </Card>

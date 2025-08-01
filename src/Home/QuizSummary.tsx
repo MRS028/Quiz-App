@@ -150,7 +150,7 @@ export default function QuizSummary() {
           </CardContent>
         </Card>
       </div>
-      <div className=" mb-2">
+      <div className=" mb-10 mt-6 text-center">
         <p className="text-center text-gray-600 mt-4">
           <strong>Want to try again? </strong>{" "}
           <Link to="/" onClick={handleReset} className="text-green-500 font-semibold">

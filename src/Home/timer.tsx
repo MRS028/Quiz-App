@@ -50,8 +50,8 @@ export default function Timer() {
   return (
     <div className="mb-4">
       <div className="flex justify-between mb-1 text-sm font-medium text-gray-700">
-        <span>Time Left: {formatTime(timeLeft)}</span>
-        <span>{Math.round(progressPercent)}%</span>
+        <span className="text-red-600">Time Left: {formatTime(timeLeft)}</span>
+        <span className="text-red-600">{Math.round(progressPercent)}%</span>
       </div>
       <div className="w-full bg-gray-300 rounded h-3">
         <div
