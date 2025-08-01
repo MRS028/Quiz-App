@@ -3,7 +3,7 @@ import { resetQuiz } from "@/Redux/features/quizSlices";
 import { resetTimer } from "@/Redux/features/timerSlice";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // 🔍 Function to determine rating status and color
 const getRatingStatus = (percentage: number) => {
@@ -19,6 +19,7 @@ export default function QuizSummary() {
   const { quizCompleted, userAnswers, questions } = useAppSelector(
     (state) => state.quiz
   );
+   const navigate = useNavigate();
   const totalQuestions = questions.length;
   const dispatch = useAppDispatch();
 
@@ -76,6 +77,12 @@ export default function QuizSummary() {
     localStorage.removeItem("quizStartTime");
     window.location.reload();
   };
+  
+
+  const handleExplanation = () => {
+    navigate("/explanation");
+  };
+
 
   return (
     <>
@@ -130,6 +137,11 @@ export default function QuizSummary() {
                 📋 Total: {totalQuestions}
               </div>
             </div>
+            <div className="text-center mt-4">
+              {/* <h2>Quiz Summary</h2> */}
+              {/* Your summary content */}
+              <button className="bg-green-500 font-semibold hover:bg-green-700 text-white px-4 py-2 rounded" onClick={handleExplanation}>View Explanation</button>
+            </div>
 
             {/* Tips */}
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
@@ -153,7 +165,11 @@ export default function QuizSummary() {
       <div className=" mb-10 mt-6 text-center">
         <p className="text-center text-gray-600 mt-4">
           <strong>Want to try again? </strong>{" "}
-          <Link to="/" onClick={handleReset} className="text-green-500 font-semibold">
+          <Link
+            to="/"
+            onClick={handleReset}
+            className="text-green-500 font-semibold"
+          >
             Start a new quiz
           </Link>
         </p>

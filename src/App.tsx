@@ -4,6 +4,7 @@ import QuizSummary from "./Home/QuizSummary";
 import { useAppSelector } from "./Redux/hooks";
 import Home from "./Home/Home";
 import Footer from "./Home/footer";
+import QuizExplanation from "./Home/QuizExplanation";
 
 function App() {
   const { quizCompleted } = useAppSelector((state) => state.quiz);
@@ -19,6 +20,7 @@ function App() {
               element={!quizCompleted ? <Questions /> : <QuizSummary />}
             />
             {/* <Route path="*" element={<NotFound />} /> */}
+          <Route path="/explanation" element={<QuizExplanation />} />
           </Routes>
         </div>
         <Footer /> {/* 👈 Footer appears on all pages */}
