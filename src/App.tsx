@@ -5,6 +5,7 @@ import { useAppSelector } from "./Redux/hooks";
 import Home from "./Home/Home";
 import Footer from "./Home/footer";
 import QuizExplanation from "./Home/QuizExplanation";
+import NotFound from "./Home/NotFound";
 
 function App() {
   const { quizCompleted } = useAppSelector((state) => state.quiz);
@@ -19,7 +20,7 @@ function App() {
               path="/quiz"
               element={!quizCompleted ? <Questions /> : <QuizSummary />}
             />
-            {/* <Route path="*" element={<NotFound />} /> */}
+            <Route path="*" element={<NotFound />} />
           <Route path="/explanation" element={<QuizExplanation />} />
           </Routes>
         </div>
