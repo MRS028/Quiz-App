@@ -2,58 +2,58 @@
 # React Quiz App
 
 A modern, interactive Quiz Application built with React, Redux Toolkit, and React Router.  
-Features include per-quiz timer with progress bar, question navigation, answer tracking, and automatic submission when time expires.
+Features include a per-quiz timer with progress bar, question navigation, answer tracking, and automatic submission when time expires.
 
 ---
 
-## Demo
+## 🚀 Live Demo
 
-[[Live:](https://testquizapp28.netlify.app/)]
+**👉 [Live: https://testquizapp28.netlify.app/](https://testquizapp28.netlify.app/)**
 
 ---
 
-## Features
+## ✨ Features
 
-- Display quiz questions with multiple-choice options  
+- Multiple-choice quiz questions  
 - Navigate between questions (Previous / Next)  
 - Real-time answer tracking using Redux Toolkit  
-- Timer for entire quiz duration based on number of questions  
-- Visual countdown with progress bar  
-- Automatic quiz submission when time runs out  
-- SweetAlert2 confirmation on manual submission  
-- Responsive and clean UI using Tailwind CSS  
-- React Router for seamless page routing (Home, Quiz, Summary)  
+- Full quiz timer based on question count  
+- Countdown timer with visual progress bar  
+- Automatic submission when time runs out  
+- SweetAlert2 confirmation for manual submission  
+- Clean and responsive UI with Tailwind CSS  
+- Seamless routing via React Router  
 
 ---
 
-## Technologies Used
+## ⚙️ Technologies Used
 
 - React (with Hooks)  
 - Redux Toolkit  
 - React Router DOM  
 - TypeScript  
 - Tailwind CSS  
-- SweetAlert2 (for alerts)  
+- SweetAlert2  
 
 ---
 
-## Getting Started
+## 🛠 Getting Started
 
 ### Prerequisites
 
-- Node.js (v14 or higher recommended)  
+- Node.js (v14+ recommended)  
 - npm or yarn  
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repo:**
 
 ```bash
 git clone https://github.com/yourusername/react-quiz-app.git
 cd react-quiz-app
 ````
 
-2. Install dependencies:
+2. **Install dependencies:**
 
 ```bash
 npm install
@@ -61,7 +61,7 @@ npm install
 yarn install
 ```
 
-3. Start the development server:
+3. **Start the dev server:**
 
 ```bash
 npm run dev
@@ -69,65 +69,66 @@ npm run dev
 yarn dev
 ```
 
-4. Open your browser and visit:
+4. **Open in browser:**
 
 ```
-http://localhost:3000
+http://localhost:5000
 ```
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 src/
- ├─ components/       # Reusable UI components (Buttons, Cards, etc.)
+ ├─ components/         # Reusable UI components (Timer, Controls)
  ├─ Home/
- │    ├─ Questions.tsx    # Quiz question component with timer and progress bar
- │    ├─ QuizSummary.tsx  # Summary page after quiz completion
- │    └─ quizData.ts      # Static quiz questions data
+ │    ├─ Questions.tsx      # Core quiz interface
+ │    ├─ QuizSummary.tsx    # Result/summary page
+ │    └─ quizData.ts        # Static quiz questions
  ├─ Redux/
  │    ├─ features/
- │    │    └─ quizSlices.ts  # Redux slice for quiz state management
- │    └─ hooks.ts            # Typed hooks for Redux
+ │    │    └─ quizSlices.ts     # Quiz logic
+ │    │    └─ timerSlice.ts     # Timer state (optional)
+ │    └─ hooks.ts               # Typed Redux hooks
  ├─ pages/
- │    └─ Home.tsx            # Landing/home page with Start Quiz button
- ├─ App.tsx                  # Router and main app entry
- └─ index.tsx                # React DOM render entry
+ │    └─ Home.tsx               # Start page
+ ├─ App.tsx                     # Routing setup
+ └─ index.tsx                   # App entry point
 ```
 
 ---
 
-## Usage
+## 🚀 Usage
 
-* Launch the app and land on the Home page
-* Click **Start Quiz** to begin
-* Timer and progress bar will start counting down
-* Select answers and navigate through questions using **Next** and **Previous** buttons
-* Submit quiz manually or wait for timer to auto-submit
-* View your score and retake quiz if desired
-
----
-
-## Customize
-
-* Modify `quizData.ts` to add/edit quiz questions
-* Adjust timer duration in `Questions.tsx` (`questions.length * 60` seconds per question by default)
-* Style components using Tailwind CSS classes
+1. Go to the home page and click **Start Quiz**
+2. Timer and progress bar begin automatically
+3. Choose answers and navigate between questions
+4. Submit the quiz manually or let it auto-submit on timeout
+5. View your score on the summary page
 
 ---
 
-## Future Improvements
+## 🧩 Customization
 
-* Add user authentication and save results online
-* Include question categories and difficulty levels
-* Support quiz pause and resume functionality
-* Add animations and sound effects
-* Make the app mobile-friendly with advanced responsive design
+* Add/edit questions in `quizData.ts`
+* Change timer duration in `Questions.tsx`
+  (`questions.length * 60` seconds by default)
+* Style UI using Tailwind CSS
 
+---
 
+## 🔮 Future Improvements
 
-## Acknowledgements
+* User login and result history
+* Question categories and difficulty
+* Quiz pause/resume functionality
+* Mobile-first design enhancements
+* Audio/visual feedback and animations
+
+---
+
+## 🙌 Acknowledgements
 
 * [React](https://reactjs.org/)
 * [Redux Toolkit](https://redux-toolkit.js.org/)
@@ -137,10 +138,3 @@ src/
 
 ---
 
-Feel free to reach out for any questions or contributions!
-
-```
-
----
-
-```
