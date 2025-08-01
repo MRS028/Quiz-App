@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAppSelector } from "@/Redux/hooks";
+import { resetQuiz } from "@/Redux/features/quizSlices";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 
@@ -15,6 +16,7 @@ const getRatingStatus = (percentage: number) => {
 export default function QuizSummary() {
   const { quizCompleted, userAnswers, questions } = useAppSelector((state) => state.quiz);
   const totalQuestions = questions.length;
+   const dispatch = useAppDispatch();
 
   if (!quizCompleted) {
     return <div className="text-center text-red-600 mt-10 font-medium">⚠️ Please complete the quiz to see the summary.</div>;
@@ -49,6 +51,12 @@ export default function QuizSummary() {
 
   // ✅ Get rating label & color
   const rating = getRatingStatus(percentage);
+  const handleReset = () => {
+    // Reset quiz state logic here, e.g., dispatch resetQuiz action
+    dispatch(resetQuiz());
+    window.location.reload(); // Reload the page to reset the quiz
+
+  };
 
   return (
     <>
@@ -106,8 +114,11 @@ export default function QuizSummary() {
       
     </div>
     <div>
-        <p className="text-center text-gray-600 mt-4">
-        Want to try again? <Link to={'/'} onClick={() => window.location.assign("/")} className="text-blue-500">Start a new quiz</Link>
+      <p className="text-center text-gray-600 mt-4">
+        Want to try again?{" "}
+        <Link to="/" onClick={handleReset} className="text-blue-500">
+          Start a new quiz
+        </Link>
       </p>
     </div>
     
