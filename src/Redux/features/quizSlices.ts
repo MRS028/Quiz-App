@@ -1,6 +1,5 @@
 import { quizData } from "@/Home/quizData";
-import { createSlice} from "@reduxjs/toolkit/react";
-
+import { createSlice,type PayloadAction } from "@reduxjs/toolkit";
 
 interface QuizState {
   questions: typeof quizData;
@@ -13,21 +12,25 @@ interface QuizState {
 const initialState: QuizState = {
   questions: quizData,
   currentQuestionIndex: 0,
-  userAnswers: Array(quizData.length).fill(null), // Initialize userAnswers with null values
+  userAnswers: Array(quizData.length).fill(null),
   quizCompleted: false,
   score: 0,
 };
+
 export const quizSlice = createSlice({
-  name: 'quiz',
+  name: "quiz",
   initialState,
   reducers: {
-    setAnswer: (state, action) => {
+    setAnswer: (
+      state,
+      action: PayloadAction<{ questionIndex: number; answer: string }>
+    ) => {
       const { questionIndex, answer } = action.payload;
-      state.userAnswers[questionIndex] = answer; 
+      state.userAnswers[questionIndex] = answer;
     },
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
-        state.currentQuestionIndex += 1; 
+        state.currentQuestionIndex += 1;
       }
     },
     previousQuestion: (state) => {
@@ -40,9 +43,22 @@ export const quizSlice = createSlice({
       state.score = state.userAnswers.reduce((acc, answer, index) => {
         return acc + (answer === state.questions[index].answer ? 1 : 0);
       }, 0);
-    }
-}
+    },
+    resetQuiz: (state) => {
+      state.currentQuestionIndex = 0;
+      state.userAnswers = Array(state.questions.length).fill(null);
+      state.quizCompleted = false;
+      state.score = 0;
+    },
+  },
 });
 
-export const { setAnswer, nextQuestion, previousQuestion, completeQuiz } = quizSlice.actions;
+export const {
+  setAnswer,
+  nextQuestion,
+  previousQuestion,
+  completeQuiz,
+  resetQuiz,
+} = quizSlice.actions;
+
 export default quizSlice.reducer;
