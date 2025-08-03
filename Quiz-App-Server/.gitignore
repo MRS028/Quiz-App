@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+dist/
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor-specific
+.vscode/
+.idea/
+*.swp
+
+# TypeScript cache
+*.tsbuildinfo
