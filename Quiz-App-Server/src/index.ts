@@ -60,6 +60,9 @@ const quizSchema = new mongoose.Schema<QuizDocument>(
 const Quiz = mongoose.model<QuizDocument>("Quiz", quizSchema);
 
 // Routes
+app.get("/", (_req: Request, res: Response) => {
+  res.send("Quiz App API is running...");
+});
 
 // Create Quiz
 app.post("/api/quizzes", async (req: Request, res: Response) => {
