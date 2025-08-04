@@ -245,7 +245,7 @@ export default function AddQuiz() {
       setStep(1);
       setOpen(false);
       // Close dialog after a short delay
-    //   setTimeout(() => setOpen(false));
+      //   setTimeout(() => setOpen(false));
     } catch (error) {
       toast.error("Error adding quiz");
       console.error("Submission error:", error);
@@ -322,40 +322,59 @@ export default function AddQuiz() {
           {step === 3 && (
             <div className="grid gap-4 py-4">
               <h3 className="font-semibold">Quiz Preview</h3>
-              <div>
-                <p>
-                  <strong>Title:</strong> {quizData.title}
-                </p>
-                <p>
-                  <strong>Description:</strong> {quizData.description}
-                </p>
-                <p>
-                  <strong>Number of Questions:</strong>{" "}
-                  {quizData.questions.length}
-                </p>
-              </div>
-              <div className="mt-4">
-                <h4 className="font-medium">Questions:</h4>
-                {quizData.questions.map((q, index) => (
-                  <div key={index} className="mt-2 p-2 border rounded">
-                    <p>
-                      <strong>Q{index + 1}:</strong> {q.question}
-                    </p>
-                    <ul className="list-disc pl-5 mt-1">
-                      {q.options.map((option, optIndex) => (
-                        <li
-                          key={optIndex}
-                          className={
-                            option === q.correctAnswer ? "font-semibold" : ""
-                          }
-                        >
-                          {option}{" "}
-                          {option === q.correctAnswer && "(Correct Answer)"}
-                        </li>
-                      ))}
-                    </ul>
+              <div className="max-h-[400px] overflow-y-auto pr-2">
+                {" "}
+                {/* Added scroll container */}
+                <div className="space-y-2">
+                  <p>
+                    <strong>Title:</strong> {quizData.title}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {quizData.description}
+                  </p>
+                  <p>
+                    <strong>Number of Questions:</strong>{" "}
+                    {quizData.questions.length}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <h4 className="font-medium">Questions:</h4>
+                  <div className="space-y-3">
+                    {" "}
+                    {/* Added space between questions */}
+                    {quizData.questions.map((q, index) => (
+                      <div
+                        key={index}
+                        className="mt-2 p-3 border rounded bg-gray-50"
+                      >
+                        {" "}
+                        {/* Added bg color */}
+                        <p>
+                          <strong>Q{index + 1}:</strong> {q.question}
+                        </p>
+                        <ul className="list-disc pl-5 mt-1 space-y-1">
+                          {" "}
+                          {/* Added space between options */}
+                          {q.options.map((option, optIndex) => (
+                            <li
+                              key={optIndex}
+                              className={
+                                option === q.correctAnswer
+                                  ? "font-semibold text-green-600"
+                                  : "text-gray-700"
+                              }
+                            >
+                              {option}
+                              {option === q.correctAnswer && (
+                                <span className="ml-1 text-green-600">✓</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           )}
