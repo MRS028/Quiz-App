@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/Redux/hooks";
 import { resetQuiz } from "@/Redux/features/quizSlices";
 import { resetTimer } from "@/Redux/features/timerSlice";
+import AddQuiz from "./AddQuiz";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ export default function Home() {
         >
           Start Quiz
         </Button>
+      </section>
+      <section>
+        <AddQuiz></AddQuiz>
       </section>
     </main>
   );

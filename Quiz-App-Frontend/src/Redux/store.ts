@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { quizSlice } from "./features/quizSlices";
 import { timerSlice } from "./features/timerSlice";
+import { quizApi } from "./api/quizApi";
 
 // Load state from localStorage
 const loadState = () => {
@@ -30,10 +31,13 @@ export const store = configureStore({
   reducer: {
     quiz: quizSlice.reducer,
     timer: timerSlice.reducer,
+    [quizApi.reducerPath]: quizApi.reducer,
   },
   preloadedState: {
     quiz: loadState() || undefined,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(quizApi.middleware),
 });
 
 // Listen for state changes and save to localStorage

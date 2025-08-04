@@ -10,7 +10,9 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json()); // built-in body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors({ origin: ["http://localhost:5173"] }));
 
 // Connect to MongoDB
@@ -57,7 +59,13 @@ const quizSchema = new mongoose.Schema<QuizDocument>(
   { timestamps: true }
 );
 
-const Quiz = mongoose.model<QuizDocument>("Quiz", quizSchema);
+const Quiz = mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
+
+// Error handling middleware
+app.use((err: any, _req: Request, res: Response, _next: any) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong" });
+});
 
 // Routes
 app.get("/", (_req: Request, res: Response) => {
@@ -66,6 +74,7 @@ app.get("/", (_req: Request, res: Response) => {
 
 // Create Quiz
 app.post("/api/quizzes", async (req: Request, res: Response) => {
+  // console.log(req.body);
   const { title, description, questions } = req.body;
 
   if (!title || !Array.isArray(questions) || questions.length === 0) {
