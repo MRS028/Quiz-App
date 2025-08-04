@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useAddQuizMutation } from "@/Redux/api/quizApi";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 
 type QuizData = {
   title: string;
@@ -228,13 +228,9 @@ export default function AddQuiz() {
       await addQuiz(quizData).unwrap();
       //   toast.success("Quiz added successfully!", { duration: 2000 });
       if (quizData.questions.length > 0) {
-        // toast.success("Questions added successfully!", { duration: 2000 });
-        Swal.fire({
-          title: "Drag me!",
-          icon: "success",
-          draggable: true,
-          timer: 2000,
-        });
+        toast.success("Questions added successfully!");
+        
+       
       }
       // Reset state
       setQuizData({

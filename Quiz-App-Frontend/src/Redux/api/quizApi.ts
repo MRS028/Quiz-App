@@ -24,4 +24,4 @@ export const quizApi = createApi({
     
 });
 
-export const { useAddQuizMutation } = quizApi
+export const { useAddQuizMutation ,useGetAllQuizzesQuery} = quizApi
