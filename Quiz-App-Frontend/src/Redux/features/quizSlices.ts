@@ -1,14 +1,29 @@
-import { quizData1, quizData2,quizData3 } from "@/Home/quizData";
+// import { quizData } from './../../Home/quizData';
+import { quizData, quizData2, quizData3 } from "@/Home/quizData";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-const allQuizData = [quizData1, quizData2, quizData3];
-const quizData = allQuizData[Math.floor(Math.random() * allQuizData.length)];
+// const allQuizData = [quizData1, quizData2, quizData3];
+// const quizData = allQuizData[Math.floor(Math.random() * allQuizData.length)];
 interface QuizState {
   questions: typeof quizData;
   currentQuestionIndex: number;
   userAnswers: (string | null)[];
   quizCompleted: boolean;
   score: number;
+}
+export interface QuizData {
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+export type Tquiz = {
+   _id: string;
+  name: string;
+  description: string;
+  questions: QuizData[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const initialState: QuizState = {
@@ -52,6 +67,9 @@ export const quizSlice = createSlice({
       state.quizCompleted = false;
       state.score = 0;
     },
+    setQuiz: (state, action) => {
+      state.questions = action.payload;
+    },
   },
 });
 
@@ -61,6 +79,7 @@ export const {
   previousQuestion,
   completeQuiz,
   resetQuiz,
+  setQuiz,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;
