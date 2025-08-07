@@ -69,6 +69,10 @@ export const quizSlice = createSlice({
     },
     setQuiz: (state, action) => {
       state.questions = action.payload;
+      state.currentQuestionIndex = 0;
+      state.userAnswers = Array(state.questions.length).fill(null);
+      state.quizCompleted = false;
+      state.score = 0;
     },
   },
 });

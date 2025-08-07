@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { completeQuiz, nextQuestion, previousQuestion } from "@/Redux/features/quizSlices";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 // import { useNavigate } from "react-router-dom";
 
@@ -10,7 +11,7 @@ export default function QuizControl() {
   );
 
   const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const isAnswered = userAnswers[currentQuestionIndex] !== null;
 
@@ -26,28 +27,28 @@ export default function QuizControl() {
     dispatch(previousQuestion());
   };
 
-  const handleComplete = () => {
-    if (isAnswered) {
-      dispatch(completeQuiz());
+ const handleComplete = () => {
+  if (isAnswered) {
+    dispatch(completeQuiz());
 
-      // SweetAlert2 Show
-      Swal.fire({
-        title: "Quiz Submitted!",
-        text: "You will be redirected to the summary page.",
-        icon: "success",
-        timer: 1000,
-        showConfirmButton: true,
-        buttonsStyling: true,
-        customClass: {
-          confirmButton: "bg-green-600 text-white hover:bg-green-700",
-        },
-        
+    Swal.fire({
+      title: "Quiz Submitted!",
+      text: "You will be redirected to the summary page.",
+      icon: "success",
+      timer: 1000,
+      showConfirmButton: false, // Hide the OK button
+      buttonsStyling: true,
+      customClass: {
+        confirmButton: "bg-green-600 text-white hover:bg-green-700",
+      },
+    }).then(() => {
+      navigate("/summary"); // ✅ Navigate to summary
+    });
+  } else {
+    alert("Please select an answer before completing the quiz.");
+  }
+};
 
-      });
-    } else {
-      alert("Please select an answer before completing the quiz.");
-    }
-  };
 
   return (
     <div className="flex text-center items-center justify-between mt-4">

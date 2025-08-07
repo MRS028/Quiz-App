@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAllQuizzesQuery } from "@/Redux/api/quizApi";
-import { resetQuiz , setQuiz  , QuizData} from "@/Redux/features/quizSlices";
+import { resetQuiz , setQuiz  ,type QuizData ,type Tquiz} from "@/Redux/features/quizSlices";
 import { resetTimer } from "@/Redux/features/timerSlice";
 import { useAppDispatch } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";
 
-const AllQuiz = () => {
+const AllQuiz = () => { 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -19,15 +19,17 @@ const AllQuiz = () => {
   if (isError || !quizzes) {
     return <p className="text-center text-red-500 font-semibold">Failed to load quizzes.</p>;
   }
-   const handleStartQuiz = (id:any) => {
-    console.log(id);
-      navigate(`/quiz/${id}`);
-      // dispatchEvent(resetQuiz());
-      dispatch(resetTimer());
-    };
+  //  const handleStartQuiz = (id:any) => {
+  //   // console.log(id);
+  //     navigate(`/quiz/${id}`);
+  //     // dispatchEvent(resetQuiz());
+  //     dispatch(resetTimer());
+  //   };
     
     const handleSetQuiz = (question: QuizData[]) => {
+      console.log(question);
       dispatch(setQuiz(question));
+      navigate("/quiz");
 
     }
 
@@ -39,9 +41,12 @@ const AllQuiz = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {quizzes.map((quiz: any) => (
-          <>
-          <Card key={quiz._id} className="hover:shadow-md transition">
+        {quizzes.map((quiz: Tquiz, index: string ) => (
+          console.log(quiz.questions),
+          
+          <Card 
+          onClick={()=> handleSetQuiz(quiz.questions)}
+          key={quiz._id} className="hover:shadow-md transition">
             <CardHeader>
               <CardTitle>{quiz.title}</CardTitle>
               <CardDescription>{quiz.description}</CardDescription>
@@ -52,11 +57,11 @@ const AllQuiz = () => {
               </p>
             </CardContent>
            
-           <div className="text-center ">
+           {/* <div className="text-center ">
             <Button onClick={()=>handleStartQuiz(quiz._id)} className="mt-4 w-24 ">Start Quiz</Button>
-           </div>
+           </div> */}
           </Card>
-           </>
+           
         ))}
       </div>
     </div>
