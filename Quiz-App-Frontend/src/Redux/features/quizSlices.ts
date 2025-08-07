@@ -1,6 +1,8 @@
-import { quizData, quizData2, quizData3 } from "@/Home/quizData";
+// quizSlices.ts
+import { quizData1, quizData2, quizData3 } from "@/Home/quizData";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
+const allQuizData = [quizData1, quizData2, quizData3];
+const quizData = allQuizData[Math.floor(Math.random() * allQuizData.length)];
 interface QuizState {
   questions: typeof quizData;
   currentQuestionIndex: number;
@@ -8,21 +10,7 @@ interface QuizState {
   quizCompleted: boolean;
   score: number;
   isTimeUp: boolean;
-}
-
-export interface QuizData {
-  question: string;
-  options: string[];
-  correctAnswer: string;
-}
-
-export type Tquiz = {
-  _id: string;
-  name: string;
-  description: string;
-  questions: QuizData[];
-  createdAt: Date;
-  updatedAt: Date;
+  timeUpQuestions: number[]; // Track which questions have timed out
 }
 
 const initialState: QuizState = {
@@ -32,6 +20,7 @@ const initialState: QuizState = {
   quizCompleted: false,
   score: 0,
   isTimeUp: false,
+  timeUpQuestions: [],
 };
 
 export const quizSlice = createSlice({
@@ -43,12 +32,15 @@ export const quizSlice = createSlice({
       action: PayloadAction<{ questionIndex: number; answer: string }>
     ) => {
       const { questionIndex, answer } = action.payload;
-      state.userAnswers[questionIndex] = answer;
+      // Only allow answer if question hasn't timed out
+      if (!state.timeUpQuestions.includes(questionIndex)) {
+        state.userAnswers[questionIndex] = answer;
+      }
     },
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
         state.currentQuestionIndex += 1;
-        state.isTimeUp = false; // Reset time up status when moving to next question
+        state.isTimeUp = false;
       }
     },
     previousQuestion: (state) => {
@@ -68,6 +60,7 @@ export const quizSlice = createSlice({
       state.quizCompleted = false;
       state.score = 0;
       state.isTimeUp = false;
+      state.timeUpQuestions = [];
     },
     setQuiz: (state, action) => {
       state.questions = action.payload;
@@ -76,9 +69,14 @@ export const quizSlice = createSlice({
       state.quizCompleted = false;
       state.score = 0;
       state.isTimeUp = false;
+      state.timeUpQuestions = [];
     },
-    setTimeUp: (state, action: PayloadAction<boolean>) => {
-      state.isTimeUp = action.payload;
+    setTimeUp: (state, action: PayloadAction<{ questionIndex: number }>) => {
+      state.isTimeUp = true;
+      // Add current question to timeUpQuestions array if not already there
+      if (!state.timeUpQuestions.includes(action.payload.questionIndex)) {
+        state.timeUpQuestions.push(action.payload.questionIndex);
+      }
     },
   },
 });

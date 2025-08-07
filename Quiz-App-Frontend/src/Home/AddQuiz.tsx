@@ -252,7 +252,9 @@ export default function AddQuiz() {
     <div className="my-6">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="destructive">Add Quiz</Button>
+          <div className="flex justify-center">
+            <Button >Add Quiz</Button>
+          </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>

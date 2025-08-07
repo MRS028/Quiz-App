@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
 
-// 🔍 Function to determine rating status and color
 const getRatingStatus = (percentage: number) => {
   if (percentage < 40) return { label: "Poor", color: "text-red-600" };
   else if (percentage < 60)
@@ -16,10 +15,9 @@ const getRatingStatus = (percentage: number) => {
 };
 
 export default function QuizSummary() {
-  const { quizCompleted, userAnswers, questions } = useAppSelector(
+  const { quizCompleted, userAnswers, questions, timeUpQuestions } = useAppSelector(
     (state) => state.quiz
   );
-  console.log(questions);
   const navigate = useNavigate();
   const totalQuestions = questions.length;
   const dispatch = useAppDispatch();
@@ -43,20 +41,24 @@ export default function QuizSummary() {
   const correctAnswers = userAnswers.filter(
     (answer, index) => answer === questions[index].correctAnswer
   ).length;
-  const incorrectAnswers = totalQuestions - correctAnswers;
+  const incorrectAnswers = userAnswers.filter(
+    (answer, index) => answer !== null && answer !== questions[index].correctAnswer
+  ).length;
+  
+  // Calculate skipped answers (null answers or timed out questions without answers)
+  const skippedAnswers = userAnswers.filter(
+    (answer, index) => answer === null || (timeUpQuestions.includes(index) && answer === null)
+  ).length;
+
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
   const scoreText = `${correctAnswers} out of ${totalQuestions} (${percentage}%)`;
-  const skippedAnswers = userAnswers.filter(
-    (answer) => answer === "Not Answered" || answer === undefined
-  ).length;
 
   const tips = [
     "🔍 Review the questions you got wrong.",
     "📚 Practice similar questions to strengthen your knowledge.",
-    "⏱️ Consider taking a timed quiz to improve your speed.",
+    "⏱️ Manage your time better - don't spend too long on one question.",
   ];
 
-  // 🟢 Determine progress bar color based on percentage
   let progressColor = "bg-red-500";
   if (percentage >= 80) {
     progressColor = "bg-green-500";
@@ -64,7 +66,6 @@ export default function QuizSummary() {
     progressColor = "bg-yellow-400";
   }
 
-  // ✅ Get rating label & color
   const rating = getRatingStatus(percentage);
   const handleReset = () => {
     dispatch(resetQuiz());
@@ -110,7 +111,6 @@ export default function QuizSummary() {
 
               <p className="text-sm mt-2 text-gray-700">{scoreText}</p>
 
-              {/* ⭐ Rating Display */}
               <p className={clsx("text-sm mt-1 font-medium", rating.color)}>
                 ⭐ Rating: {rating.label}
               </p>
@@ -124,16 +124,15 @@ export default function QuizSummary() {
               <div className="bg-red-100 p-3 rounded-lg font-semibold text-red-800 shadow-sm">
                 ❌ Incorrect: {incorrectAnswers}
               </div>
-              <div className="bg-red-100 p-3 rounded-lg font-semibold text-blue-800 shadow-sm">
-                ⛔ Skipped: {skippedAnswers}
+              <div className="bg-blue-100 p-3 rounded-lg font-semibold text-blue-800 shadow-sm">
+                ⏱️ Skipped: {skippedAnswers}
               </div>
               <div className="bg-gray-100 p-3 rounded-lg font-semibold text-black shadow-sm">
                 📋 Total: {totalQuestions}
               </div>
             </div>
+            
             <div className="text-center mt-4">
-              {/* <h2>Quiz Summary</h2> */}
-              {/* Your summary content */}
               <button
                 className="bg-green-500 font-semibold hover:bg-green-700 text-white px-4 py-2 rounded"
                 onClick={handleExplanation}
@@ -156,18 +155,18 @@ export default function QuizSummary() {
 
             {/* Final Message */}
             <div className="text-center text-sm md:text-xl text-green-700 font-medium">
-              🎯 Great job on completing the quiz!
+              {percentage > 70 ? "🎯 Excellent work!" : "👍 Keep practicing!"}
             </div>
           </CardContent>
         </Card>
       </div>
-      <div className=" mb-10 mt-6 text-center">
+      <div className="mb-10 mt-6 text-center">
         <p className="text-center text-gray-600 mt-4">
           <strong>Want to try again? </strong>{" "}
           <Link
             to="/"
             onClick={handleReset}
-            className="text-green-500 font-semibold"
+            className="text-green-500 font-semibold hover:text-green-700"
           >
             Start a new quiz
           </Link>

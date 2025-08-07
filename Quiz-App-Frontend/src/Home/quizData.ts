@@ -1,4 +1,4 @@
-export const quizData = [
+export const quizData1 = [
   {
     id: 1,
     question: "What is the capital of France?",

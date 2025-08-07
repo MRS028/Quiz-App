@@ -6,6 +6,7 @@ import Home from "./Home/Home";
 import Footer from "./Home/footer";
 import QuizExplanation from "./Home/QuizExplanation";
 import NotFound from "./Home/NotFound";
+import AddQuiz from "./Home/AddQuiz";
 
 function App() {
   const { quizCompleted } = useAppSelector((state) => state.quiz);
@@ -21,6 +22,7 @@ function App() {
               element={!quizCompleted ? <Questions /> : <QuizSummary />}
             />
             <Route path="/explanation" element={<QuizExplanation />} />
+            <Route path="/add-quiz" element={<AddQuiz />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

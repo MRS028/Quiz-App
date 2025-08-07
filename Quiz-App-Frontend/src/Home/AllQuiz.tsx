@@ -43,7 +43,7 @@ const AllQuiz = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {quizzes.map((quiz: Tquiz, index: string ) => (
-          console.log(quiz.questions),
+          // console.log(quiz.questions),
           
           <Card 
           onClick={()=> handleSetQuiz(quiz.questions)}

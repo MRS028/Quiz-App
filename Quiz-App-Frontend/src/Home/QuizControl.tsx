@@ -5,7 +5,7 @@ import {
   completeQuiz,
   nextQuestion,
   previousQuestion,
-  setTimeUp
+  setTimeUp,
 } from "@/Redux/features/quizSlices";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +15,17 @@ export default function QuizControl() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { currentQuestionIndex, userAnswers, questions, quizCompleted, isTimeUp } =
-    useAppSelector((state) => state.quiz);
+  const {
+    currentQuestionIndex,
+    userAnswers,
+    questions,
+    quizCompleted,
+    timeUpQuestions,
+  } = useAppSelector((state) => state.quiz);
 
   const isAnswered = userAnswers[currentQuestionIndex] !== null;
-  const TIMER_DURATION = 50; // seconds per question
+  const isQuestionTimeUp = timeUpQuestions.includes(currentQuestionIndex);
+  const TIMER_DURATION = 50;
 
   const getEndTime = () => {
     const saved = localStorage.getItem(`quiz_timer_end_${currentQuestionIndex}`);
@@ -39,9 +45,9 @@ export default function QuizControl() {
     Math.max(0, Math.floor((endTime - Date.now()) / 1000))
   );
 
-  // Effect: Auto move to next question or submit when time is up
+  // Auto move or submit when time is up
   useEffect(() => {
-    if (isTimeUp && !quizCompleted) {
+    if (isQuestionTimeUp && !quizCompleted) {
       const timer = setTimeout(() => {
         if (currentQuestionIndex < questions.length - 1) {
           dispatch(nextQuestion());
@@ -61,26 +67,26 @@ export default function QuizControl() {
 
       return () => clearTimeout(timer);
     }
-  }, [isTimeUp, currentQuestionIndex, questions.length, dispatch, quizCompleted, navigate]);
+  }, [isQuestionTimeUp, currentQuestionIndex, questions.length, dispatch, quizCompleted, navigate]);
 
-  // Effect: Timer tick every 1 second
+  // Timer tick
   useEffect(() => {
-    if (isTimeUp || quizCompleted) return;
+    if (isQuestionTimeUp || quizCompleted) return;
 
     const interval = setInterval(() => {
       const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
       setTimeLeft(remaining);
 
       if (remaining === 0) {
-        dispatch(setTimeUp(true));
+        dispatch(setTimeUp({ questionIndex: currentQuestionIndex }));
         clearInterval(interval);
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [endTime, isTimeUp, quizCompleted, dispatch]);
+  }, [endTime, isQuestionTimeUp, quizCompleted, dispatch, currentQuestionIndex]);
 
-  // Effect: On question change, reset timer states properly
+  // Reset timer on question change
   useEffect(() => {
     if (quizCompleted) return;
 
@@ -92,28 +98,26 @@ export default function QuizControl() {
       localStorage.setItem(`quiz_timer_end_${currentQuestionIndex}`, newEndTime.toString());
       setEndTime(newEndTime);
       setTimeLeft(TIMER_DURATION);
-      dispatch(setTimeUp(false));
     } else {
       setEndTime(savedParsed);
       setTimeLeft(Math.max(0, Math.floor((savedParsed - Date.now()) / 1000)));
-      dispatch(setTimeUp(savedParsed <= Date.now()));
     }
-  }, [currentQuestionIndex, quizCompleted, dispatch]);
+  }, [currentQuestionIndex, quizCompleted]);
 
   const handleNext = () => {
-    if (isAnswered && !quizCompleted && !isTimeUp) {
+    if ((isAnswered || isQuestionTimeUp) && !quizCompleted) {
       dispatch(nextQuestion());
     }
   };
 
   const handlePrevious = () => {
-    if (!quizCompleted && !isTimeUp) {
+    if (!quizCompleted) {
       dispatch(previousQuestion());
     }
   };
 
   const handleComplete = () => {
-    if (!quizCompleted && !isTimeUp) {
+    if (!quizCompleted) {
       dispatch(completeQuiz());
       Swal.fire({
         title: "Quiz Submitted!",
@@ -129,13 +133,12 @@ export default function QuizControl() {
 
   return (
     <div className="space-y-4">
-      {/* Timer Display */}
       <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-md shadow">
         <h3 className="text-md font-semibold">
           Question {currentQuestionIndex + 1} of {questions.length}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">Time Left:</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300 font-semibold">Time Left:</span>
           <div
             className={`w-10 h-10 flex items-center justify-center rounded-full border-4 text-sm font-bold ${
               timeLeft > 10
@@ -150,12 +153,11 @@ export default function QuizControl() {
         </div>
       </div>
 
-      {/* Navigation Buttons */}
       <div className="flex items-center justify-between mt-4">
         <Button
           className="w-24"
           onClick={handlePrevious}
-          disabled={currentQuestionIndex === 0 || quizCompleted || isTimeUp}
+          disabled={currentQuestionIndex === 0 || quizCompleted}
         >
           Previous
         </Button>
@@ -164,31 +166,31 @@ export default function QuizControl() {
           <Button
             className="w-24"
             onClick={handleNext}
-            disabled={!isAnswered || quizCompleted || isTimeUp}
+            disabled={!isAnswered && !isQuestionTimeUp}
           >
             Next
           </Button>
         )}
 
         {currentQuestionIndex === questions.length - 1 && !quizCompleted && (
-          <Button 
-            className="w-24" 
+          <Button
+            className="w-24"
             onClick={handleComplete}
-            disabled={!isAnswered || quizCompleted || isTimeUp}
+            disabled={!isAnswered && !isQuestionTimeUp}
           >
             Submit
           </Button>
         )}
       </div>
 
-      {/* Warning messages */}
-      {isTimeUp && (
+      {isQuestionTimeUp && (
         <p className="text-sm text-red-500 mt-2">
-          ⏱️ Time's up! {currentQuestionIndex < questions.length - 1 ? 
-          "Moving to next question..." : "Submitting quiz..."}
+          ⏱️ Time's up! {currentQuestionIndex < questions.length - 1
+            ? "Moving to next question..."
+            : "Submitting quiz..."}
         </p>
       )}
-      {!isAnswered && !isTimeUp && (
+      {!isAnswered && !isQuestionTimeUp && (
         <p className="text-sm text-center font-semibold text-yellow-500 mt-2">
           Please select an answer to proceed
         </p>

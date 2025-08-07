@@ -1,5 +1,4 @@
 // Questions.tsx
-// import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import { setAnswer } from "@/Redux/features/quizSlices";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,14 +8,15 @@ import QuizControl from "./QuizControl";
 export default function Questions() {
   const dispatch = useAppDispatch();
 
-  const { questions, currentQuestionIndex, userAnswers, quizCompleted, isTimeUp } =
+  const { questions, currentQuestionIndex, userAnswers, timeUpQuestions } =
     useAppSelector((state) => state.quiz);
 
   const currentQuestion = questions[currentQuestionIndex];
   const currentAnswer = userAnswers[currentQuestionIndex];
+  const isQuestionTimeUp = timeUpQuestions.includes(currentQuestionIndex);
 
   const handleAnswerChange = (answer: string) => {
-    if (!isTimeUp && !quizCompleted) {
+    if (!isQuestionTimeUp) {
       dispatch(
         setAnswer({
           questionIndex: currentQuestionIndex,
@@ -30,12 +30,11 @@ export default function Questions() {
     <div className="flex justify-center items-center mt-16 px-2">
       <Card className="w-full max-w-2xl mx-auto mt-10 p-3 md:p-6 shadow-lg space-y-6">
         <CardHeader>
-          <CardTitle
-            key={currentQuestion.id + 1}
-            className="text-lg md:text-2xl text-left font-bold"
-          >
+          <CardTitle className="text-lg md:text-2xl text-left font-bold">
             {currentQuestionIndex + 1}. {currentQuestion.question}
-            {isTimeUp && <span className="text-red-500 ml-2">(Time's Up!)</span>}
+            {isQuestionTimeUp && (
+              <span className="text-red-500 ml-2">(Time's Up!)</span>
+            )}
           </CardTitle>
         </CardHeader>
 
@@ -46,7 +45,7 @@ export default function Questions() {
               variant={currentAnswer === option ? "default" : "outline"}
               onClick={() => handleAnswerChange(option)}
               className="w-full justify-start text-left px-4 py-2"
-              disabled={isTimeUp || quizCompleted}
+              disabled={isQuestionTimeUp}
             >
               {i + 1}. {option}
               {currentAnswer === option && <span className="ml-2">✓</span>}
