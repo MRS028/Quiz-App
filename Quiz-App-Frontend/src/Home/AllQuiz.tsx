@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAllQuizzesQuery } from "@/Redux/api/quizApi";
+// @ts-ignore
 import { setQuiz, type QuizData, type Tquiz } from "@/Redux/features/quizSlices";
 import { useAppDispatch } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";

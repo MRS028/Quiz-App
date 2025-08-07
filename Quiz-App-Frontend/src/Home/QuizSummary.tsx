@@ -6,6 +6,7 @@ import { resetQuiz } from "@/Redux/features/quizSlices";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import { Check, X, SkipForward, HelpCircle, Trophy, Lightbulb, RotateCcw, FileText } from "lucide-react";
+import useScrollToTop from "@/hooks/useScrollToTop";
 
 // --- Helper Functions and Components ---
 
@@ -43,11 +44,12 @@ const StatCard = ({ icon, label, value, bgColor }: { icon: React.ReactNode, labe
 // --- Main Component ---
 
 export default function QuizSummary() {
-  const { quizCompleted, userAnswers, questions, timeUpQuestions } = useAppSelector(
+  const { quizCompleted, userAnswers, questions } = useAppSelector(
     (state) => state.quiz
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  useScrollToTop();
 
   // Logic remains the same
   if (!quizCompleted) {

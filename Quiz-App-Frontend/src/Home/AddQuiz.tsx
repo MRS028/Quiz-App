@@ -14,7 +14,7 @@ import { useAddQuizMutation } from "@/Redux/api/quizApi";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
-import { Plus, Trash2, ArrowLeft, ArrowRight, Check, Send, ListChecks, FileText, MessageSquare } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ArrowRight, Check, Send,  } from "lucide-react";
 
 // --- THEMED MODAL CONFIG ---
 const themedSwal = Swal.mixin({

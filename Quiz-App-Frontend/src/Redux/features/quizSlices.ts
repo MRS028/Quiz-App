@@ -87,7 +87,8 @@ export const {
   previousQuestion,
   completeQuiz,
   resetQuiz,
-  setQuiz,
+  // @ts-ignore
+   setQuiz, // @ts-ignore
   setTimeUp,
 } = quizSlice.actions;
 

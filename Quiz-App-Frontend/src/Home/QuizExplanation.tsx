@@ -1,7 +1,7 @@
 import { useAppSelector } from "../Redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2, XCircle, SkipForward, Lightbulb } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, SkipForward } from "lucide-react";
 import useScrollToTop from "@/hooks/useScrollToTop";
 
 // A reusable component for displaying an answer line with an icon
@@ -98,7 +98,7 @@ export default function QuizExplanation() {
                   )}
                   
                   {/* Mock Explanation */}
-                  {q.explanation && (
+                  {/* {q.explanation && (
                      <div className="pt-4 border-t border-slate-700/50">
                         <div className="flex items-start gap-3 text-gray-400">
                             <Lightbulb className="w-5 h-5 text-amber-400 flex-shrink-0 mt-1" />
@@ -108,7 +108,7 @@ export default function QuizExplanation() {
                             </div>
                         </div>
                      </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             );
