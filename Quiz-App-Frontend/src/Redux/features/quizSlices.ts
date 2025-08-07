@@ -1,16 +1,15 @@
-// import { quizData } from './../../Home/quizData';
 import { quizData, quizData2, quizData3 } from "@/Home/quizData";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-// const allQuizData = [quizData1, quizData2, quizData3];
-// const quizData = allQuizData[Math.floor(Math.random() * allQuizData.length)];
 interface QuizState {
   questions: typeof quizData;
   currentQuestionIndex: number;
   userAnswers: (string | null)[];
   quizCompleted: boolean;
   score: number;
+  isTimeUp: boolean;
 }
+
 export interface QuizData {
   question: string;
   options: string[];
@@ -18,7 +17,7 @@ export interface QuizData {
 }
 
 export type Tquiz = {
-   _id: string;
+  _id: string;
   name: string;
   description: string;
   questions: QuizData[];
@@ -32,6 +31,7 @@ const initialState: QuizState = {
   userAnswers: Array(quizData.length).fill(null),
   quizCompleted: false,
   score: 0,
+  isTimeUp: false,
 };
 
 export const quizSlice = createSlice({
@@ -48,6 +48,7 @@ export const quizSlice = createSlice({
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
         state.currentQuestionIndex += 1;
+        state.isTimeUp = false; // Reset time up status when moving to next question
       }
     },
     previousQuestion: (state) => {
@@ -58,7 +59,7 @@ export const quizSlice = createSlice({
     completeQuiz: (state) => {
       state.quizCompleted = true;
       state.score = state.userAnswers.reduce((acc, answer, index) => {
-        return acc + (answer === state.questions[index].answer ? 1 : 0);
+        return acc + (answer === state.questions[index].correctAnswer ? 1 : 0);
       }, 0);
     },
     resetQuiz: (state) => {
@@ -66,6 +67,7 @@ export const quizSlice = createSlice({
       state.userAnswers = Array(state.questions.length).fill(null);
       state.quizCompleted = false;
       state.score = 0;
+      state.isTimeUp = false;
     },
     setQuiz: (state, action) => {
       state.questions = action.payload;
@@ -73,6 +75,10 @@ export const quizSlice = createSlice({
       state.userAnswers = Array(state.questions.length).fill(null);
       state.quizCompleted = false;
       state.score = 0;
+      state.isTimeUp = false;
+    },
+    setTimeUp: (state, action: PayloadAction<boolean>) => {
+      state.isTimeUp = action.payload;
     },
   },
 });
@@ -84,6 +90,7 @@ export const {
   completeQuiz,
   resetQuiz,
   setQuiz,
+  setTimeUp,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

@@ -7,10 +7,17 @@ interface TimerState {
   startTime: number | null; // timestamp in ms
 }
 
+const LOCAL_START_TIME_KEY = "quizStartTime";
+const LOCAL_QUESTION_INDEX_KEY = "quizQuestionIndex";
+
+// Read from localStorage if exists
+const storedStartTime = localStorage.getItem(LOCAL_START_TIME_KEY);
+const storedQuestionIndex = localStorage.getItem(LOCAL_QUESTION_INDEX_KEY);
+
 const initialState: TimerState = {
-  currentQuestionIndex: 0,
-  timePerQuestion: 60,
-  startTime: null,
+  currentQuestionIndex: storedQuestionIndex ? parseInt(storedQuestionIndex) : 0,
+  timePerQuestion: 50, // ⏱️ 50 seconds per question
+  startTime: storedStartTime ? parseInt(storedStartTime) : Date.now(),
 };
 
 export const timerSlice = createSlice({
@@ -20,17 +27,20 @@ export const timerSlice = createSlice({
     startQuestionTimer: (state, action: PayloadAction<{ index: number; timestamp: number }>) => {
       state.currentQuestionIndex = action.payload.index;
       state.startTime = action.payload.timestamp;
-      localStorage.setItem("quizStartTime", action.payload.timestamp.toString());
+      localStorage.setItem(LOCAL_START_TIME_KEY, action.payload.timestamp.toString());
+      localStorage.setItem(LOCAL_QUESTION_INDEX_KEY, action.payload.index.toString());
     },
     nextQuestion: (state) => {
       state.currentQuestionIndex += 1;
       state.startTime = Date.now();
-      localStorage.setItem("quizStartTime", state.startTime.toString());
+      localStorage.setItem(LOCAL_START_TIME_KEY, state.startTime.toString());
+      localStorage.setItem(LOCAL_QUESTION_INDEX_KEY, state.currentQuestionIndex.toString());
     },
     resetTimer: (state) => {
       state.currentQuestionIndex = 0;
-      state.startTime = null;
-      localStorage.removeItem("quizStartTime");
+      state.startTime = Date.now();
+      localStorage.removeItem(LOCAL_START_TIME_KEY);
+      localStorage.removeItem(LOCAL_QUESTION_INDEX_KEY);
     },
   },
 });

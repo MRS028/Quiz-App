@@ -20,7 +20,7 @@ export default function QuizSummary() {
     (state) => state.quiz
   );
   console.log(questions);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const totalQuestions = questions.length;
   const dispatch = useAppDispatch();
 
@@ -46,8 +46,9 @@ export default function QuizSummary() {
   const incorrectAnswers = totalQuestions - correctAnswers;
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
   const scoreText = `${correctAnswers} out of ${totalQuestions} (${percentage}%)`;
-
-  
+  const skippedAnswers = userAnswers.filter(
+    (answer) => answer === "Not Answered" || answer === undefined
+  ).length;
 
   const tips = [
     "🔍 Review the questions you got wrong.",
@@ -72,12 +73,10 @@ export default function QuizSummary() {
     localStorage.removeItem("quizStartTime");
     window.location.reload();
   };
-  
 
   const handleExplanation = () => {
     navigate("/explanation");
   };
-
 
   return (
     <>
@@ -125,8 +124,8 @@ export default function QuizSummary() {
               <div className="bg-red-100 p-3 rounded-lg font-semibold text-red-800 shadow-sm">
                 ❌ Incorrect: {incorrectAnswers}
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg font-semibold text-blue-800 shadow-sm">
-                📊 Score: {percentage}%
+              <div className="bg-red-100 p-3 rounded-lg font-semibold text-blue-800 shadow-sm">
+                ⛔ Skipped: {skippedAnswers}
               </div>
               <div className="bg-gray-100 p-3 rounded-lg font-semibold text-black shadow-sm">
                 📋 Total: {totalQuestions}
@@ -135,7 +134,12 @@ export default function QuizSummary() {
             <div className="text-center mt-4">
               {/* <h2>Quiz Summary</h2> */}
               {/* Your summary content */}
-              <button className="bg-green-500 font-semibold hover:bg-green-700 text-white px-4 py-2 rounded" onClick={handleExplanation}>View Explanation</button>
+              <button
+                className="bg-green-500 font-semibold hover:bg-green-700 text-white px-4 py-2 rounded"
+                onClick={handleExplanation}
+              >
+                View Explanation
+              </button>
             </div>
 
             {/* Tips */}

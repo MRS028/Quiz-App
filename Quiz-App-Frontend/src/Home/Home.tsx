@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/Redux/hooks";
 import { resetQuiz } from "@/Redux/features/quizSlices";
-import { resetTimer } from "@/Redux/features/timerSlice";
+// import { resetTimer } from "@/Redux/features/timerSlice";
 import AddQuiz from "./AddQuiz";
 import AllQuiz from "./AllQuiz";
 
@@ -14,7 +14,7 @@ export default function Home() {
   const handleStartQuiz = () => {
     navigate("/quiz");
     dispatch(resetQuiz());
-    dispatch(resetTimer());
+    // dispatch(resetTimer());
   };
 
   return (

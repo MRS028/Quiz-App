@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetAllQuizzesQuery } from "@/Redux/api/quizApi";
-import { resetQuiz , setQuiz  ,type QuizData ,type Tquiz} from "@/Redux/features/quizSlices";
-import { resetTimer } from "@/Redux/features/timerSlice";
+import {   setQuiz  ,type QuizData ,type Tquiz} from "@/Redux/features/quizSlices";
+// import { resetTimer } from "@/Redux/features/timerSlice";
 import { useAppDispatch } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +27,8 @@ const AllQuiz = () => {
   //   };
     
     const handleSetQuiz = (question: QuizData[]) => {
-      console.log(question);
+      // console.log(question);
+      // dispatch(resetTimer());
       dispatch(setQuiz(question));
       navigate("/quiz");
 

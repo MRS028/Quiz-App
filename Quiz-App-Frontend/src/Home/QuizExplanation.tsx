@@ -25,7 +25,7 @@ const QuizExplanation = () => {
       {/* Explanation List */}
       {questions.map((q, index) => {
         const userAnswer = userAnswers[index];
-        const isCorrect = userAnswer === q.answer;
+        const isCorrect = userAnswer === q.correctAnswer;
 
         return (
           <div
@@ -45,7 +45,7 @@ const QuizExplanation = () => {
 
             <p>
               <span className="font-medium">Correct Answer:</span>{" "}
-              <span className="text-green-700">{q.answer}</span>
+              <span className="text-green-700 font-semibold">{q.correctAnswer}</span>
             </p>
 
             {/* {q.explanation && (
