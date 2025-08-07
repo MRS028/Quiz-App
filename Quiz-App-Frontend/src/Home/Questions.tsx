@@ -30,7 +30,7 @@ export default function Questions() {
   };
 
   return (
-    <div className="flex justify-center items-start mt-10 md:mt-16 px-4">
+    <div className="flex justify-center items-start  mt-10 md:mt-16 px-4">
       <Card className="w-full max-w-3xl mx-auto p-4 md:p-8 bg-slate-900/80 border border-slate-700 shadow-2xl shadow-black/20 backdrop-blur-sm">
         <CardHeader className="mb-4">
           <CardTitle className="flex items-start gap-4 text-xl md:text-2xl text-gray-100 font-bold">

@@ -5,6 +5,7 @@ import { resetQuiz } from "@/Redux/features/quizSlices";
 import AddQuiz from "./AddQuiz";
 import AllQuiz from "./AllQuiz";
 import { Rocket, Award, Clock, BarChart2, Sparkles } from "lucide-react";
+import useScrollToTop from "@/hooks/useScrollToTop";
 
 // Fake data for stats (Unchanged)
 const quizStats = [
@@ -15,6 +16,7 @@ const quizStats = [
 ];
 
 export default function Home() {
+  useScrollToTop();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -54,7 +56,7 @@ export default function Home() {
               className="w-full sm:w-auto text-lg px-8 py-6 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300 transform hover:-translate-y-1"
             >
               <Rocket className="mr-2" />
-              Start Quiz Now
+              Start A Random Quiz
             </Button>
             <Button
               variant="outline"
