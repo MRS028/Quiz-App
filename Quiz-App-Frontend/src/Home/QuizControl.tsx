@@ -42,7 +42,7 @@ export default function QuizControl() {
         confirmButton: "bg-green-600 text-white hover:bg-green-700",
       },
     }).then(() => {
-      navigate("/summary"); // ✅ Navigate to summary
+      navigate("/quiz"); // ✅ Navigate to summary
     });
   } else {
     alert("Please select an answer before completing the quiz.");

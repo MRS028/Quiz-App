@@ -1,34 +1,39 @@
-
-import { createSlice,type PayloadAction } from "@reduxjs/toolkit";
+// Redux/features/timerSlice.ts
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface TimerState {
-  startTime: number | null;
-  totalDuration: number; // in seconds
+  currentQuestionIndex: number;
+  timePerQuestion: number; // in seconds
+  startTime: number | null; // timestamp in ms
 }
 
 const initialState: TimerState = {
+  currentQuestionIndex: 0,
+  timePerQuestion: 60,
   startTime: null,
-  totalDuration: 0,
 };
 
 export const timerSlice = createSlice({
   name: "timer",
   initialState,
   reducers: {
-    startTimer: (state, action: PayloadAction<number>) => {
-      state.startTime = action.payload; // timestamp
-      localStorage.setItem("quizStartTime", action.payload.toString());
+    startQuestionTimer: (state, action: PayloadAction<{ index: number; timestamp: number }>) => {
+      state.currentQuestionIndex = action.payload.index;
+      state.startTime = action.payload.timestamp;
+      localStorage.setItem("quizStartTime", action.payload.timestamp.toString());
     },
-    setDuration: (state, action: PayloadAction<number>) => {
-      state.totalDuration = action.payload;
+    nextQuestion: (state) => {
+      state.currentQuestionIndex += 1;
+      state.startTime = Date.now();
+      localStorage.setItem("quizStartTime", state.startTime.toString());
     },
     resetTimer: (state) => {
+      state.currentQuestionIndex = 0;
       state.startTime = null;
-      state.totalDuration = 0;
       localStorage.removeItem("quizStartTime");
     },
   },
 });
 
-export const { startTimer, setDuration, resetTimer } = timerSlice.actions;
+export const { startQuestionTimer, nextQuestion, resetTimer } = timerSlice.actions;
 export default timerSlice.reducer;

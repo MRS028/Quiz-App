@@ -1,10 +1,11 @@
-
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
-import { setAnswer} from "@/Redux/features/quizSlices";
+import { setAnswer } from "@/Redux/features/quizSlices";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import QuizControl from "./QuizControl";
 import Timer from "./timer";
+import { startQuestionTimer } from "@/Redux/features/timerSlice";
 
 export default function Questions() {
   const dispatch = useAppDispatch();
@@ -15,6 +16,16 @@ export default function Questions() {
 
   const currentQuestion = questions[currentQuestionIndex];
   const currentAnswer = userAnswers[currentQuestionIndex];
+
+  // 🔁 যখনই প্রশ্ন পরিবর্তন হবে তখন নতুন টাইম শুরু হবে
+  useEffect(() => {
+    dispatch(
+      startQuestionTimer({
+        index: currentQuestionIndex,
+        timestamp: Date.now(),
+      })
+    );
+  }, [currentQuestionIndex, dispatch]);
 
   const handleAnswerChange = (answer: string) => {
     dispatch(
@@ -34,7 +45,7 @@ export default function Questions() {
         </div>
 
         <CardHeader>
-          <CardTitle className="text-lg md:text-2xl text-left font-bold ">
+          <CardTitle className="text-lg md:text-2xl text-left font-bold">
             {currentQuestion.id}. {currentQuestion.question}
           </CardTitle>
         </CardHeader>

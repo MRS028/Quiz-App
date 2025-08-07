@@ -19,6 +19,7 @@ export default function QuizSummary() {
   const { quizCompleted, userAnswers, questions } = useAppSelector(
     (state) => state.quiz
   );
+  console.log(questions);
    const navigate = useNavigate();
   const totalQuestions = questions.length;
   const dispatch = useAppDispatch();
@@ -40,19 +41,13 @@ export default function QuizSummary() {
   }
 
   const correctAnswers = userAnswers.filter(
-    (answer, index) => answer === questions[index].answer
+    (answer, index) => answer === questions[index].correctAnswer
   ).length;
   const incorrectAnswers = totalQuestions - correctAnswers;
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
   const scoreText = `${correctAnswers} out of ${totalQuestions} (${percentage}%)`;
 
-  if (correctAnswers === 0) {
-    return (
-      <div className="text-center text-pink-600 mt-10 font-semibold">
-        😢 You did not answer any questions correctly. Better luck next time!
-      </div>
-    );
-  }
+  
 
   const tips = [
     "🔍 Review the questions you got wrong.",

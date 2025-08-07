@@ -20,11 +20,11 @@ function App() {
               path="/quiz"
               element={!quizCompleted ? <Questions /> : <QuizSummary />}
             />
+            <Route path="/explanation" element={<QuizExplanation />} />
             <Route path="*" element={<NotFound />} />
-          <Route path="/explanation" element={<QuizExplanation />} />
           </Routes>
         </div>
-        <Footer /> {/* 👈 Footer appears on all pages */}
+        <Footer />
       </div>
     </BrowserRouter>
   );

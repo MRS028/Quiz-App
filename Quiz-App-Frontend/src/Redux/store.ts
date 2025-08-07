@@ -1,15 +1,13 @@
+// Redux/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { quizSlice } from "./features/quizSlices";
-import { timerSlice } from "./features/timerSlice";
+import timerReducer from "@/Redux/features/timerSlice";
 import { quizApi } from "./api/quizApi";
 
-// Load state from localStorage
 const loadState = () => {
   try {
     const serializedState = localStorage.getItem("quizState");
-    if (serializedState === null) {
-      return undefined; // fallback to initialState
-    }
+    if (serializedState === null) return undefined;
     return JSON.parse(serializedState);
   } catch (err) {
     console.error("Could not load state", err);
@@ -17,7 +15,6 @@ const loadState = () => {
   }
 };
 
-// Save state to localStorage
 const saveState = (state: any) => {
   try {
     const serializedState = JSON.stringify(state);
@@ -30,7 +27,7 @@ const saveState = (state: any) => {
 export const store = configureStore({
   reducer: {
     quiz: quizSlice.reducer,
-    timer: timerSlice.reducer,
+    timer: timerReducer,
     [quizApi.reducerPath]: quizApi.reducer,
   },
   preloadedState: {
@@ -40,10 +37,9 @@ export const store = configureStore({
     getDefaultMiddleware().concat(quizApi.middleware),
 });
 
-// Listen for state changes and save to localStorage
 store.subscribe(() => {
   const state = store.getState();
-  saveState(state.quiz); // Save only quiz slice
+  saveState(state.quiz);
 });
 
 export type RootState = ReturnType<typeof store.getState>;

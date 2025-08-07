@@ -1,27 +1,18 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../Redux/hooks";
 import { completeQuiz } from "@/Redux/features/quizSlices";
+import { nextQuestion } from "@/Redux/features/timerSlice";
 
 export default function Timer() {
   const dispatch = useAppDispatch();
   const { questions } = useAppSelector((state) => state.quiz);
+  const { currentQuestionIndex, timePerQuestion, startTime } = useAppSelector(
+    (state) => state.timer
+  );
 
-  const totalTime = questions.length * 60; // total seconds
-
-  const getStartTime = () => {
-    const saved = localStorage.getItem("quizStartTime");
-    if (saved) {
-      const parsed = parseInt(saved, 10);
-      if (!isNaN(parsed)) return parsed;
-    }
-    const now = Date.now();
-    localStorage.setItem("quizStartTime", now.toString());
-    return now;
-  };
-
-  const [startTime] = useState(getStartTime());
   const calculateTimeLeft = () =>
-    Math.max(0, Math.floor((startTime + totalTime * 1000 - Date.now()) / 1000));
+    Math.max(0, Math.floor((startTime! + timePerQuestion * 1000 - Date.now()) / 1000));
+
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
@@ -31,13 +22,16 @@ export default function Timer() {
 
       if (remaining <= 0) {
         clearInterval(interval);
-        localStorage.removeItem("quizStartTime");
-        dispatch(completeQuiz());
+        if (currentQuestionIndex + 1 >= questions.length) {
+          dispatch(completeQuiz());
+        } else {
+          dispatch(nextQuestion());
+        }
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [dispatch, startTime]);
+  }, [currentQuestionIndex, dispatch, startTime]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -45,17 +39,31 @@ export default function Timer() {
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  const progressPercent = (timeLeft / totalTime) * 100;
+  const progressPercent = (timeLeft / timePerQuestion) * 100;
+  const isDanger = timeLeft <= 10;
 
   return (
-    <div className="mb-4">
-      <div className="flex justify-between mb-1 text-sm font-medium text-gray-700">
-        <span className="text-red-600">Time Left: {formatTime(timeLeft)}</span>
-        <span className="text-red-600">{Math.round(progressPercent)}%</span>
+    <div className="w-full mb-6 space-y-2">
+      {/* Top bar with time and question info */}
+      <div className="flex items-center justify-between text-sm md:text-base font-semibold">
+        <span className={`text-gray-700`}>
+          Question {currentQuestionIndex + 1} of {questions.length}
+        </span>
+        <span
+          className={`font-mono text-lg md:text-xl ${
+            isDanger ? "text-red-600 animate-pulse" : "text-green-700"
+          }`}
+        >
+          ⏳ {formatTime(timeLeft)}
+        </span>
       </div>
-      <div className="w-full bg-gray-300 rounded h-3">
+
+      {/* Progress bar */}
+      <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
         <div
-          className="bg-gray-700 h-3 rounded transition-all duration-500"
+          className={`h-3 rounded-full transition-all duration-500 ${
+            isDanger ? "bg-red-500" : "bg-green-600"
+          }`}
           style={{ width: `${progressPercent}%` }}
         ></div>
       </div>

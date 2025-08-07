@@ -14,7 +14,7 @@ interface QuizState {
 export interface QuizData {
   question: string;
   options: string[];
-  answer: string;
+  correctAnswer: string;
 }
 
 export type Tquiz = {
