@@ -1,35 +1,35 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
-// Load environment variables
 dotenv.config();
 
-// Create Express app
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cors({ origin: ["http://localhost:5173"] }));
 
-// Connect to MongoDB
-const DB_URI = process.env.DB_URI;
-if (!DB_URI) {
-  console.error("❌ MongoDB connection string (DB_URI) not found in .env");
-  process.exit(1);
-}
-mongoose
-  .connect(DB_URI)
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
-  });
+// Lazy DB connection handler for serverless environment
+let isConnected = false;
 
-// Schema Definitions
+async function connectToDB() {
+  if (isConnected) {
+    // Use existing connection
+    return;
+  }
+  const DB_URI = process.env.DB_URI;
+  if (!DB_URI) {
+    console.error("❌ MongoDB connection string (DB_URI) not found in .env");
+    throw new Error("MongoDB URI missing");
+  }
+  await mongoose.connect(DB_URI);
+  isConnected = true;
+  console.log("✅ Connected to MongoDB");
+}
+
+// Define schema & model here (same as before)
 interface Question {
   question: string;
   options: string[];
@@ -59,28 +59,34 @@ const quizSchema = new mongoose.Schema<QuizDocument>(
   { timestamps: true }
 );
 
-const Quiz = mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
+const Quiz = mongoose.models.Quiz || mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
+
+// Middleware to connect DB before handling routes
+app.use(async (_req: Request, _res: Response, next: NextFunction) => {
+  try {
+    await connectToDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Error handling middleware
-app.use((err: any, _req: Request, res: Response, _next: any) => {
-  console.error(err.stack);
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
   res.status(500).json({ error: "Something went wrong" });
 });
 
-// Routes
+// Routes (same as before)
 app.get("/", (_req: Request, res: Response) => {
   res.send("Quiz App API is running...");
 });
 
-// Create Quiz
 app.post("/api/quizzes", async (req: Request, res: Response) => {
-  // console.log(req.body);
   const { title, description, questions } = req.body;
-
   if (!title || !Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ error: "Title and questions are required." });
   }
-
   try {
     const quiz = new Quiz({ title, description, questions });
     await quiz.save();
@@ -90,7 +96,6 @@ app.post("/api/quizzes", async (req: Request, res: Response) => {
   }
 });
 
-// Get All Quizzes
 app.get("/api/quizzes", async (_req: Request, res: Response) => {
   try {
     const quizzes = await Quiz.find();
@@ -100,7 +105,6 @@ app.get("/api/quizzes", async (_req: Request, res: Response) => {
   }
 });
 
-// Get Single Quiz by ID
 app.get("/api/quizzes/:id", async (req: Request, res: Response) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -111,14 +115,11 @@ app.get("/api/quizzes/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Update Quiz
 app.patch("/api/quizzes/:id", async (req: Request, res: Response) => {
   const { title, description, questions } = req.body;
-
   if (!title || !Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ error: "Title and questions are required." });
   }
-
   try {
     const quiz = await Quiz.findByIdAndUpdate(
       req.params.id,
@@ -132,7 +133,6 @@ app.patch("/api/quizzes/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Delete Quiz
 app.delete("/api/quizzes/:id", async (req: Request, res: Response) => {
   try {
     const quiz = await Quiz.findByIdAndDelete(req.params.id);
@@ -142,7 +142,8 @@ app.delete("/api/quizzes/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error deleting quiz: " + error });
   }
 });
-
 // Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+export default app;
