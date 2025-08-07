@@ -216,7 +216,7 @@ export default function QuizControl() {
     <div className="space-y-6">
       {/* Progress and Timer Section */}
       <div className="space-y-3">
-        <div className="flex justify-between items-center text-sm font-medium text-gray-400">
+        <div className="flex justify-between items-center text-sm font-medium text-gray-200">
           <span>Progress</span>
           <span>
             Question {currentQuestionIndex + 1} of {questions.length}
@@ -239,6 +239,7 @@ export default function QuizControl() {
       <div className="flex items-center justify-between">
         <Button
           onClick={handlePrevious}
+          variant={"outline"}
           disabled={currentQuestionIndex === 0 || quizCompleted}
           className="px-6 py-5 bg-slate-700 hover:bg-slate-600 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
         >
@@ -249,6 +250,7 @@ export default function QuizControl() {
         {currentQuestionIndex < questions.length - 1 && !quizCompleted && (
           <Button
             onClick={handleNext}
+            variant={"outline"}
             disabled={!isAnswered && !isQuestionTimeUp}
             className="px-6 py-5 bg-teal-600 hover:bg-teal-700 text-white disabled:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
