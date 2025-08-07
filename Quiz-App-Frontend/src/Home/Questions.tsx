@@ -59,7 +59,7 @@ export default function Questions() {
                   ${
                     isSelected
                       ? "bg-teal-600 hover:bg-teal-700 text-white border-teal-500"
-                      : "bg-slate-800/70 border-slate-700 hover:bg-slate-700/80 hover:border-teal-500 text-gray-300"
+                      : "bg-slate-800/70 border-slate-700 hover:text-red-400 hover:bg-slate-700/80 hover:border-teal-500 text-gray-300"
                   }
                   ${isQuestionTimeUp ? "opacity-60 cursor-not-allowed" : ""}
                 `}

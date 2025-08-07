@@ -10,20 +10,26 @@ import {
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ArrowLeft, ArrowRight, CheckCheck, AlertTriangle, Info } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCheck,
+  AlertTriangle,
+  Info,
+} from "lucide-react";
 
 // Custom styled SweetAlert2 configuration
 const themedSwal = Swal.mixin({
-  background: '#1e293b', // slate-800
-  color: '#e2e8f0', // slate-200
+  background: "#1e293b", // slate-800
+  color: "#e2e8f0", // slate-200
   customClass: {
-    popup: 'border border-slate-700 rounded-xl',
-    confirmButton: 'bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded',
-    timerProgressBar: 'bg-teal-500',
+    popup: "border border-slate-700 rounded-xl",
+    confirmButton:
+      "bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded",
+    timerProgressBar: "bg-teal-500",
   },
   buttonsStyling: false,
 });
-
 
 export default function QuizControl() {
   const dispatch = useAppDispatch();
@@ -43,7 +49,9 @@ export default function QuizControl() {
   const TIMER_DURATION = 50;
 
   const getEndTime = () => {
-    const saved = localStorage.getItem(`quiz_timer_end_${currentQuestionIndex}`);
+    const saved = localStorage.getItem(
+      `quiz_timer_end_${currentQuestionIndex}`
+    );
     if (saved) {
       const parsed = parseInt(saved, 10);
       if (!isNaN(parsed) && parsed > Date.now()) {
@@ -51,7 +59,10 @@ export default function QuizControl() {
       }
     }
     const newEndTime = Date.now() + TIMER_DURATION * 1000;
-    localStorage.setItem(`quiz_timer_end_${currentQuestionIndex}`, newEndTime.toString());
+    localStorage.setItem(
+      `quiz_timer_end_${currentQuestionIndex}`,
+      newEndTime.toString()
+    );
     return newEndTime;
   };
 
@@ -61,6 +72,7 @@ export default function QuizControl() {
   );
 
   // All useEffect hooks for timer logic remain unchanged
+  // QuizControl.tsx (updated parts only)
   useEffect(() => {
     if (isQuestionTimeUp && !quizCompleted) {
       const timer = setTimeout(() => {
@@ -68,41 +80,90 @@ export default function QuizControl() {
           dispatch(nextQuestion());
         } else {
           dispatch(completeQuiz());
-          themedSwal.fire({
-            title: "Time's Up!",
-            text: "Quiz has been automatically submitted.",
-            icon: "info",
-            timer: 1500,
-            showConfirmButton: false,
-          }).then(() => {
-            navigate("/quiz");
-          });
+          themedSwal
+            .fire({
+              title: "Quiz Submitted!",
+              text: "Your answers have been automatically submitted.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            })
+            .then(() => {
+              navigate("/quiz");
+            });
         }
       }, 1000);
+
       return () => clearTimeout(timer);
     }
-  }, [isQuestionTimeUp, currentQuestionIndex, questions.length, dispatch, quizCompleted, navigate]);
+  }, [
+    isQuestionTimeUp,
+    currentQuestionIndex,
+    questions.length,
+    dispatch,
+    quizCompleted,
+    navigate,
+  ]);
 
   useEffect(() => {
     if (isQuestionTimeUp || quizCompleted) return;
+
     const interval = setInterval(() => {
       const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
       setTimeLeft(remaining);
+
+      // Auto proceed if answered but not submitted
+      if (remaining === 0 && isAnswered) {
+        if (currentQuestionIndex < questions.length - 1) {
+          dispatch(nextQuestion());
+        } else {
+          dispatch(completeQuiz());
+          themedSwal
+            .fire({
+              title: "Quiz Submitted!",
+              text: "Your answers have been automatically submitted.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+            })
+            .then(() => {
+              navigate("/quiz");
+            });
+        }
+        clearInterval(interval);
+        return;
+      }
+
       if (remaining === 0) {
         dispatch(setTimeUp({ questionIndex: currentQuestionIndex }));
         clearInterval(interval);
       }
     }, 1000);
+
     return () => clearInterval(interval);
-  }, [endTime, isQuestionTimeUp, quizCompleted, dispatch, currentQuestionIndex]);
+  }, [
+    endTime,
+    isQuestionTimeUp,
+    quizCompleted,
+    dispatch,
+    currentQuestionIndex,
+    isAnswered,
+    questions.length,
+    navigate,
+  ]);
 
   useEffect(() => {
     if (quizCompleted) return;
-    const saved = localStorage.getItem(`quiz_timer_end_${currentQuestionIndex}`);
+    const saved = localStorage.getItem(
+      `quiz_timer_end_${currentQuestionIndex}`
+    );
     const savedParsed = saved ? parseInt(saved, 10) : 0;
     if (!saved || isNaN(savedParsed) || savedParsed <= Date.now()) {
       const newEndTime = Date.now() + TIMER_DURATION * 1000;
-      localStorage.setItem(`quiz_timer_end_${currentQuestionIndex}`, newEndTime.toString());
+      localStorage.setItem(
+        `quiz_timer_end_${currentQuestionIndex}`,
+        newEndTime.toString()
+      );
       setEndTime(newEndTime);
       setTimeLeft(TIMER_DURATION);
     } else {
@@ -127,20 +188,23 @@ export default function QuizControl() {
   const handleComplete = () => {
     if (!quizCompleted) {
       dispatch(completeQuiz());
-      themedSwal.fire({
-        title: "Quiz Submitted!",
-        text: "You will be redirected to the summary page.",
-        icon: "success",
-        timer: 1200,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      }).then(() => {
-        navigate("/quiz");
-      });
+      themedSwal
+        .fire({
+          title: "Quiz Submitted!",
+          text: "You will be redirected to the summary page.",
+          icon: "success",
+          timer: 1200,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        })
+        .then(() => {
+          navigate("/quiz");
+        });
     }
   };
 
-  const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const progressPercentage =
+    ((currentQuestionIndex + 1) / questions.length) * 100;
 
   const getTimerColor = () => {
     if (timeLeft > 15) return "text-teal-400";
@@ -154,7 +218,9 @@ export default function QuizControl() {
       <div className="space-y-3">
         <div className="flex justify-between items-center text-sm font-medium text-gray-400">
           <span>Progress</span>
-          <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
+          <span>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
         </div>
         <div className="w-full bg-slate-700 rounded-full h-2.5">
           <div
@@ -163,7 +229,9 @@ export default function QuizControl() {
           ></div>
         </div>
         <div className="flex items-center justify-center gap-2 pt-2">
-            <span className={`font-semibold text-lg ${getTimerColor()}`}>Time Left: {timeLeft}s</span>
+          <span className={`font-semibold text-lg ${getTimerColor()}`}>
+            Time Left: {timeLeft}s
+          </span>
         </div>
       </div>
 
@@ -206,7 +274,10 @@ export default function QuizControl() {
         {isQuestionTimeUp && (
           <p className="flex items-center justify-center gap-2 text-sm text-red-400 font-semibold">
             <Info className="w-4 h-4" />
-            Time's up! {currentQuestionIndex < questions.length - 1 ? "Moving to next question..." : "Submitting quiz..."}
+            Time's up!{" "}
+            {currentQuestionIndex < questions.length - 1
+              ? "Moving to next question..."
+              : "Submitting quiz..."}
           </p>
         )}
         {!isAnswered && !isQuestionTimeUp && (
