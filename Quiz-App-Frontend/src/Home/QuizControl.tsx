@@ -10,11 +10,26 @@ import {
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ArrowLeft, ArrowRight, CheckCheck, AlertTriangle, Info } from "lucide-react";
+
+// Custom styled SweetAlert2 configuration
+const themedSwal = Swal.mixin({
+  background: '#1e293b', // slate-800
+  color: '#e2e8f0', // slate-200
+  customClass: {
+    popup: 'border border-slate-700 rounded-xl',
+    confirmButton: 'bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded',
+    timerProgressBar: 'bg-teal-500',
+  },
+  buttonsStyling: false,
+});
+
 
 export default function QuizControl() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  // All Redux and state logic remains unchanged
   const {
     currentQuestionIndex,
     userAnswers,
@@ -45,7 +60,7 @@ export default function QuizControl() {
     Math.max(0, Math.floor((endTime - Date.now()) / 1000))
   );
 
-  // Auto move or submit when time is up
+  // All useEffect hooks for timer logic remain unchanged
   useEffect(() => {
     if (isQuestionTimeUp && !quizCompleted) {
       const timer = setTimeout(() => {
@@ -53,7 +68,7 @@ export default function QuizControl() {
           dispatch(nextQuestion());
         } else {
           dispatch(completeQuiz());
-          Swal.fire({
+          themedSwal.fire({
             title: "Time's Up!",
             text: "Quiz has been automatically submitted.",
             icon: "info",
@@ -64,35 +79,27 @@ export default function QuizControl() {
           });
         }
       }, 1000);
-
       return () => clearTimeout(timer);
     }
   }, [isQuestionTimeUp, currentQuestionIndex, questions.length, dispatch, quizCompleted, navigate]);
 
-  // Timer tick
   useEffect(() => {
     if (isQuestionTimeUp || quizCompleted) return;
-
     const interval = setInterval(() => {
       const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
       setTimeLeft(remaining);
-
       if (remaining === 0) {
         dispatch(setTimeUp({ questionIndex: currentQuestionIndex }));
         clearInterval(interval);
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [endTime, isQuestionTimeUp, quizCompleted, dispatch, currentQuestionIndex]);
 
-  // Reset timer on question change
   useEffect(() => {
     if (quizCompleted) return;
-
     const saved = localStorage.getItem(`quiz_timer_end_${currentQuestionIndex}`);
     const savedParsed = saved ? parseInt(saved, 10) : 0;
-
     if (!saved || isNaN(savedParsed) || savedParsed <= Date.now()) {
       const newEndTime = Date.now() + TIMER_DURATION * 1000;
       localStorage.setItem(`quiz_timer_end_${currentQuestionIndex}`, newEndTime.toString());
@@ -104,6 +111,7 @@ export default function QuizControl() {
     }
   }, [currentQuestionIndex, quizCompleted]);
 
+  // All handler functions remain unchanged
   const handleNext = () => {
     if ((isAnswered || isQuestionTimeUp) && !quizCompleted) {
       dispatch(nextQuestion());
@@ -119,82 +127,95 @@ export default function QuizControl() {
   const handleComplete = () => {
     if (!quizCompleted) {
       dispatch(completeQuiz());
-      Swal.fire({
+      themedSwal.fire({
         title: "Quiz Submitted!",
         text: "You will be redirected to the summary page.",
         icon: "success",
         timer: 1200,
         showConfirmButton: false,
+        timerProgressBar: true,
       }).then(() => {
         navigate("/quiz");
       });
     }
   };
 
+  const progressPercentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+
+  const getTimerColor = () => {
+    if (timeLeft > 15) return "text-teal-400";
+    if (timeLeft > 5) return "text-amber-400";
+    return "text-red-500 animate-pulse";
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-md shadow">
-        <h3 className="text-md font-semibold">
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300 font-semibold">Time Left:</span>
+    <div className="space-y-6">
+      {/* Progress and Timer Section */}
+      <div className="space-y-3">
+        <div className="flex justify-between items-center text-sm font-medium text-gray-400">
+          <span>Progress</span>
+          <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
+        </div>
+        <div className="w-full bg-slate-700 rounded-full h-2.5">
           <div
-            className={`w-10 h-10 flex items-center justify-center rounded-full border-4 text-sm font-bold ${
-              timeLeft > 10
-                ? "border-green-500"
-                : timeLeft > 0
-                ? "border-yellow-500"
-                : "border-red-500"
-            }`}
-          >
-            {timeLeft > 0 ? timeLeft : "⏰"}
-          </div>
+            className="bg-teal-500 h-2.5 rounded-full transition-all duration-500"
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
+        </div>
+        <div className="flex items-center justify-center gap-2 pt-2">
+            <span className={`font-semibold text-lg ${getTimerColor()}`}>Time Left: {timeLeft}s</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      {/* Navigation Buttons */}
+      <div className="flex items-center justify-between">
         <Button
-          className="w-24"
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0 || quizCompleted}
+          className="px-6 py-5 bg-slate-700 hover:bg-slate-600 text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
         >
+          <ArrowLeft className="w-5 h-5 mr-2" />
           Previous
         </Button>
 
         {currentQuestionIndex < questions.length - 1 && !quizCompleted && (
           <Button
-            className="w-24"
             onClick={handleNext}
             disabled={!isAnswered && !isQuestionTimeUp}
+            className="px-6 py-5 bg-teal-600 hover:bg-teal-700 text-white disabled:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         )}
 
         {currentQuestionIndex === questions.length - 1 && !quizCompleted && (
           <Button
-            className="w-24"
             onClick={handleComplete}
             disabled={!isAnswered && !isQuestionTimeUp}
+            className="px-6 py-5 bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit
+            Submit Quiz
+            <CheckCheck className="w-5 h-5 ml-2" />
           </Button>
         )}
       </div>
 
-      {isQuestionTimeUp && (
-        <p className="text-sm text-red-500 mt-2">
-          ⏱️ Time's up! {currentQuestionIndex < questions.length - 1
-            ? "Moving to next question..."
-            : "Submitting quiz..."}
-        </p>
-      )}
-      {!isAnswered && !isQuestionTimeUp && (
-        <p className="text-sm text-center font-semibold text-yellow-500 mt-2">
-          Please select an answer to proceed
-        </p>
-      )}
+      {/* Status Messages */}
+      <div className="h-6 text-center">
+        {isQuestionTimeUp && (
+          <p className="flex items-center justify-center gap-2 text-sm text-red-400 font-semibold">
+            <Info className="w-4 h-4" />
+            Time's up! {currentQuestionIndex < questions.length - 1 ? "Moving to next question..." : "Submitting quiz..."}
+          </p>
+        )}
+        {!isAnswered && !isQuestionTimeUp && (
+          <p className="flex items-center justify-center gap-2 text-sm text-amber-400 font-semibold">
+            <AlertTriangle className="w-4 h-4" />
+            Please select an answer to proceed
+          </p>
+        )}
+      </div>
     </div>
   );
 }
