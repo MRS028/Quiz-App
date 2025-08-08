@@ -9,7 +9,11 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: ["http://localhost:5173"] }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://testquizapp28.netlify.app"],
+  })
+);
 
 // Lazy DB connection handler for serverless environment
 let isConnected = false;
@@ -59,7 +63,9 @@ const quizSchema = new mongoose.Schema<QuizDocument>(
   { timestamps: true }
 );
 
-const Quiz = mongoose.models.Quiz || mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
+const Quiz =
+  mongoose.models.Quiz ||
+  mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
 
 // Middleware to connect DB before handling routes
 app.use(async (_req: Request, _res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 # Ignore node_modules and .env inside both folders
 Quiz-App-Frontend/node_modules/
-Quiz-App-Frontend/.env
+Quiz-App-Frontend/.env.local
 Quiz-App-Frontend/dist
 
 Quiz-App-Server/node_modules/

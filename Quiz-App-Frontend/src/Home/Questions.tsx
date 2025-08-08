@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import QuizControl from "./QuizControl";
 import { CheckCircle2, XCircle } from "lucide-react";
+import useScrollToTop from "@/hooks/useScrollToTop";
 
 export default function Questions() {
+  useScrollToTop();
   const dispatch = useAppDispatch();
 
   // Redux state logic remains unchanged
