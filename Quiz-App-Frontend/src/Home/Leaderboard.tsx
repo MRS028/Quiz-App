@@ -8,15 +8,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Trophy, BrainCircuit,  Users } from "lucide-react";
-import { useGetQuizResultsQuery, } from "@/Redux/api/quizApi";
+import { Loader2, Trophy, BrainCircuit, Users } from "lucide-react";
+import { useGetQuizResultsQuery } from "@/Redux/api/quizApi";
+import useScrollToTop from "@/hooks/useScrollToTop";
 
 export default function Leaderboard() {
   const { data, isLoading, error } = useGetQuizResultsQuery();
-
+  useScrollToTop();
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-[60vh] bg-gray-900 text-white">
+      <div className="flex flex-col justify-center min-h-screen items-center  bg-gray-900 text-white">
         <Loader2 className="w-10 h-10 animate-spin text-teal-400" />
         <span className="mt-4 text-lg text-gray-400 tracking-wider">
           Loading Leaderboard...
@@ -132,8 +133,7 @@ export default function Leaderboard() {
                     {quiz?.totalQuestions}
                   </p>
                 </div>
-                
-                
+
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                   <h3 className="text-sm font-medium text-slate-400">
                     Highest Score
@@ -177,6 +177,9 @@ export default function Leaderboard() {
                         <TableHead className="text-center text-slate-400 uppercase tracking-wider">
                           Percentage
                         </TableHead>
+                        <TableHead className="text-center text-slate-400 uppercase tracking-wider">
+                          Time
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -196,6 +199,9 @@ export default function Leaderboard() {
                           </TableCell>
                           <TableCell className="text-center font-semibold text-teal-300">
                             {student.percentage.toFixed(2)}%
+                          </TableCell>
+                          <TableCell className="text-center font-semibold text-slate-300">
+                            {student.dateBD}
                           </TableCell>
                         </TableRow>
                       ))}

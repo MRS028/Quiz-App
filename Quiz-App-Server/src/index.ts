@@ -286,6 +286,7 @@ app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
           marks: { $max: "$marks" },
           percentage: { $max: "$percentage" },
           total: { $first: "$total" },
+          createdAt: { $first: "$createdAt" },
         },
       },
       {
@@ -295,12 +296,14 @@ app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
           averagePercentage: { $avg: "$percentage" },
           highestPercentage: { $max: "$percentage" },
           lowestPercentage: { $min: "$percentage" },
+          quizDate: { $first: "$createdAt" },
           students: {
             $push: {
               name: "$_id.name",
               marks: "$marks",
               percentage: "$percentage",
               total: "$total",
+              date: "$createdAt",
             },
           },
         },
@@ -314,12 +317,155 @@ app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
         },
       },
       { $unwind: "$quizInfo" },
-
       {
         $addFields: {
           quizTitle: "$quizInfo.title",
-          totalQuestions: {$size: "$quizInfo.questions"},
-
+          totalQuestions: { $size: "$quizInfo.questions" },
+          // bd time 12h format
+          quizDateBD: {
+            $concat: [
+              {
+                $dateToString: {
+                  date: "$quizDate",
+                  format: "%d-%m-%Y ",
+                  timezone: "Asia/Dhaka",
+                },
+              },
+              {
+                $let: {
+                  vars: {
+                    hour: {
+                      $mod: [
+                        {
+                          $add: [
+                            {
+                              $hour: {
+                                date: "$quizDate",
+                                timezone: "Asia/Dhaka",
+                              },
+                            },
+                            11,
+                          ],
+                        },
+                        12,
+                      ],
+                    },
+                    minute: {
+                      $dateToString: {
+                        date: "$quizDate",
+                        format: "%M",
+                        timezone: "Asia/Dhaka",
+                      },
+                    },
+                    ampm: {
+                      $cond: [
+                        {
+                          $gte: [
+                            {
+                              $hour: {
+                                date: "$quizDate",
+                                timezone: "Asia/Dhaka",
+                              },
+                            },
+                            12,
+                          ],
+                        },
+                        "PM",
+                        "AM",
+                      ],
+                    },
+                  },
+                  in: {
+                    $concat: [
+                      { $toString: "$$hour" },
+                      ":",
+                      "$$minute",
+                      " ",
+                      "$$ampm",
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+          students: {
+            $map: {
+              input: "$students",
+              as: "s",
+              in: {
+                name: "$$s.name",
+                marks: "$$s.marks",
+                percentage: "$$s.percentage",
+                total: "$$s.total",
+                dateBD: {
+                  $concat: [
+                    {
+                      $dateToString: {
+                        date: "$$s.date",
+                        format: "%Y-%m-%d ",
+                        timezone: "Asia/Dhaka",
+                      },
+                    },
+                    {
+                      $let: {
+                        vars: {
+                          hour: {
+                            $mod: [
+                              {
+                                $add: [
+                                  {
+                                    $hour: {
+                                      date: "$$s.date",
+                                      timezone: "Asia/Dhaka",
+                                    },
+                                  },
+                                  11,
+                                ],
+                              },
+                              12,
+                            ],
+                          },
+                          minute: {
+                            $dateToString: {
+                              date: "$$s.date",
+                              format: "%M",
+                              timezone: "Asia/Dhaka",
+                            },
+                          },
+                          ampm: {
+                            $cond: [
+                              {
+                                $gte: [
+                                  {
+                                    $hour: {
+                                      date: "$$s.date",
+                                      timezone: "Asia/Dhaka",
+                                    },
+                                  },
+                                  12,
+                                ],
+                              },
+                              "PM",
+                              "AM",
+                            ],
+                          },
+                        },
+                        in: {
+                          $concat: [
+                            { $toString: "$$hour" },
+                            ":",
+                            "$$minute",
+                            " ",
+                            "$$ampm",
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
         },
       },
       {
