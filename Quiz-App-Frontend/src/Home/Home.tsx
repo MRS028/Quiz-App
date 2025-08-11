@@ -7,6 +7,7 @@ import AllQuiz from "./AllQuiz";
 import { Rocket, Award, Clock, BarChart2, Sparkles } from "lucide-react";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { useRef } from "react";
+import { MdLeaderboard } from "react-icons/md";
 
 // Fake data for stats (Unchanged)
 const quizStats = [
@@ -66,7 +67,7 @@ export default function Home() {
               <Rocket className="mr-2" />
               Start A Quiz
             </Button>
-            <p><AddQuiz /></p>
+            <p className="w-full"><AddQuiz /></p>
             {/* <Button
               variant="outline"
               className="w-full sm:w-auto text-lg px-8 py-6 bg-transparent border-2 border-slate-600 hover:border-teal-500 text-gray-300 hover:text-white hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1"
@@ -78,10 +79,10 @@ export default function Home() {
             </Button> */}
             <Button
             onClick={handleRank}
-              variant="outline"
-              className="w-full sm:w-auto text-lg px-8 py-6 bg-transparent border-2 border-slate-600 hover:border-teal-500 text-gray-300 hover:text-white hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1"
+              // variant="outline"
+              className="w-full sm:w-auto text-lg px-8 py-6 bg-teal-500 outline-none hover:bg-teal-600 text-white rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300 transform hover:-translate-y-1"
             >
-              LeaderBoard
+            <MdLeaderboard className="" />  LeaderBoard
 
             </Button>
           </div>
