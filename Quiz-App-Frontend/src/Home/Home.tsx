@@ -7,6 +7,7 @@ import AllQuiz from "./AllQuiz";
 import { Rocket, Award, Clock, BarChart2, Sparkles } from "lucide-react";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { useRef } from "react";
+import Leaderboard from "./Leaderboard";
 
 // Fake data for stats (Unchanged)
 const quizStats = [
@@ -19,7 +20,7 @@ const quizStats = [
 export default function Home() {
   useScrollToTop();
    const allQuizRef = useRef<HTMLDivElement | null>(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Logic is completely unchanged
@@ -28,6 +29,9 @@ export default function Home() {
    allQuizRef.current.scrollIntoView({ behavior: "smooth" });
     dispatch(resetQuiz());
   };
+  const handleRank = () => {
+    navigate("/leaderboard")
+  }
 
   return (
     <main className="min-h-screen w-full flex-col items-center justify-start bg-slate-900 text-gray-200 px-4 py-16 md:py-24">
@@ -59,17 +63,25 @@ export default function Home() {
               className="w-full sm:w-auto text-lg px-8 py-6 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow-lg shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-500/30 transition-all duration-300 transform hover:-translate-y-1"
             >
               <Rocket className="mr-2" />
-              Start A Random Quiz
+              Start A Quiz
             </Button>
-            <Button
+            <p><AddQuiz /></p>
+            {/* <Button
               variant="outline"
               className="w-full sm:w-auto text-lg px-8 py-6 bg-transparent border-2 border-slate-600 hover:border-teal-500 text-gray-300 hover:text-white hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1"
             >
-              {/* This button styling works with your existing structure */}
               <div className="flex items-center justify-center">
                 <Rocket className="mr-2" />
-                <AddQuiz />
+                
               </div>
+            </Button> */}
+            <Button
+            onClick={handleRank}
+              variant="outline"
+              className="w-full sm:w-auto text-lg px-8 py-6 bg-transparent border-2 border-slate-600 hover:border-teal-500 text-gray-300 hover:text-white hover:bg-slate-800 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              LeaderBoard
+
             </Button>
           </div>
         </section>

@@ -1,10 +1,30 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+interface Student {
+  _id: string;
+  name: string;
+  marks: number;
+  percentage: number;
+}
+
+export interface QuizResult {
+  _id: {
+    class: string;
+    quizId: string;
+  };
+  averagePercentage: number;
+  highestPercentage: number;
+  lowestPercentage: number;
+  quizTitle: string;
+  students: Student[];
+  totalStudents: number;
+}
+
 export const quizApi = createApi({
   reducerPath: "quizApi",
   baseQuery: fetchBaseQuery({
-    // baseUrl: "http://localhost:5000/api",
-    baseUrl: import.meta.env.VITE_API_BASE_URL,
+    baseUrl: "http://localhost:5000/api",
+    // baseUrl: import.meta.env.VITE_API_BASE_URL,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("accessToken");
       if (token) {
@@ -56,6 +76,12 @@ export const quizApi = createApi({
         body: result,
       }),
     }),
+    getQuizResults : builder.query<QuizResult[], void>({
+      query: () => "/quiz-sessions/classwise",
+      providesTags: ["Quizzes"],
+
+    })
+    
   }),
 });
 
@@ -66,4 +92,5 @@ export const {
   useDeleteQuizMutation,
   useStartQuizSessionMutation,
   useSubmitQuizResultMutation,
+  useGetQuizResultsQuery
 } = quizApi;

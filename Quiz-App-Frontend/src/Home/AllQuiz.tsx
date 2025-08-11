@@ -29,6 +29,13 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // ✅ FIXED IMPORT
 
 // Loading Spinner
 const LoadingSpinner = () => (
@@ -55,31 +62,19 @@ const ErrorDisplay = () => (
 const AllQuiz = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-// @ts-ignore
-  const [openForm, setOpenForm] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<Tquiz | null>(null);
   const [name, setName] = useState("");
   const [className, setClassName] = useState("");
   const [startQuizSession] = useStartQuizSessionMutation();
 
-  const {
-    data: quizzes,
-    isLoading,
-    isError,
-    refetch,
-  } = useGetAllQuizzesQuery(undefined);
+  const { data: quizzes, isLoading, isError, refetch } =
+    useGetAllQuizzesQuery(undefined);
 
   if (isLoading) return <LoadingSpinner />;
   if (isError || !quizzes) return <ErrorDisplay />;
-  // @ts-ignore
-  const handleSetQuiz = (question: QuizData[]) => {
-    dispatch(setQuiz(question));
-    navigate("/quiz");
-  };
 
   const handleOpenForm = (quiz: Tquiz) => {
     setSelectedQuiz(quiz);
-    setOpenForm(true);
   };
 
   const handleFormSubmit = async () => {
@@ -93,12 +88,11 @@ const AllQuiz = () => {
 
     localStorage.setItem("quizSessionId", res.sessionId);
     dispatch(setQuiz(selectedQuiz.questions));
-    setOpenForm(false);
     navigate("/quiz");
   };
 
   return (
-    <div className=" max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-3">
           <BookOpen className="w-8 h-8 mt-2 text-teal-400" />
@@ -130,61 +124,84 @@ const AllQuiz = () => {
                 {quiz.description}
               </CardDescription>
             </CardHeader>
+
             <CardContent className="p-6 flex-grow flex flex-col justify-between">
-              <div>
-                <div className="flex items-center text-teal-300/80 text-sm">
-                  <HelpCircle className="w-4 h-4 mr-2" />
-                  <p>Total Questions: {quiz.questions?.length ?? 0}</p>
-                </div>
+              <div className="flex items-center text-teal-300/80 text-sm">
+                <HelpCircle className="w-4 h-4 mr-2" />
+                <p>Total Questions: {quiz.questions?.length ?? 0}</p>
               </div>
 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
                     onClick={() => handleOpenForm(quiz)}
-                    className="w-full mt-6 bg-slate-700/80 hover:bg-teal-600 text-gray-200 hover:text-white font-semibold transition-all duration-300"
+                    className="w-full mt-6 bg-slate-700/80 hover:bg-teal-600 text-gray-200 hover:text-white font-semibold transition-all duration-300 text-sm sm:text-base py-3 sm:py-4"
                   >
                     Start Quiz
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] md:max-w-[500px] lg:max-w-[600px] w-[90vw] rounded-lg">
-                  <DialogHeader className="px-4 pt-4">
-                    <DialogTitle className="text-xl md:text-2xl">
+
+                <DialogContent className="w-[95vw] max-w-[400px] sm:max-w-[500px] md:max-w-[600px] lg:max-w-[650px] rounded-lg">
+                  <DialogHeader className="px-4 pt-4 sm:pt-6">
+                    <DialogTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold">
                       Enter Your Details
                     </DialogTitle>
-                    <DialogDescription className="text-sm md:text-base">
+                    <DialogDescription className="text-xs sm:text-sm md:text-base lg:text-lg">
                       Please fill in your details to start the quiz.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="p-4 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm md:text-base">
+
+                  <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    {/* Name */}
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label
+                        htmlFor="name"
+                        className="text-xs sm:text-sm md:text-base lg:text-lg font-medium"
+                      >
                         Name
                       </Label>
                       <Input
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full text-sm md:text-base p-2 md:p-3"
+                        className="w-full text-sm sm:text-base md:text-lg px-3 py-2 sm:py-3 md:py-4"
+                        placeholder="Enter your full name"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="class" className="text-sm md:text-base">
+
+                    {/* Class Selection */}
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label
+                        htmlFor="class"
+                        className="text-xs sm:text-sm md:text-base lg:text-lg font-medium"
+                      >
                         Class
                       </Label>
-                      <Input
-                        id="class"
+                      <Select
+                        onValueChange={(value) => setClassName(value)}
                         value={className}
-                        onChange={(e) => setClassName(e.target.value)}
-                        className="w-full text-sm md:text-base p-2 md:p-3"
-                      />
+                      >
+                        <SelectTrigger
+                          id="class"
+                          className="w-full text-sm sm:text-base md:text-lg px-3 py-2 sm:py-3 md:py-4"
+                        >
+                          <SelectValue placeholder="Select your class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="8">Class 8</SelectItem>
+                          <SelectItem value="9">Class 9</SelectItem>
+                          <SelectItem value="10">Class 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
+
+                    {/* Submit */}
                     <Button
                       onClick={handleFormSubmit}
-                      className="w-full mt-4 text-sm md:text-base py-2 md:py-3"
+                      className="w-full mt-4 sm:mt-6 text-sm sm:text-base md:text-lg py-3 sm:py-4 md:py-5"
                     >
-                      Start Quiz
+                      Start Quiz Now
                     </Button>
                   </div>
                 </DialogContent>
