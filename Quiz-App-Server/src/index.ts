@@ -318,6 +318,8 @@ app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
       {
         $addFields: {
           quizTitle: "$quizInfo.title",
+          totalQuestions: {$size: "$quizInfo.questions"},
+
         },
       },
       {

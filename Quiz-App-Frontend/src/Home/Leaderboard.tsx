@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -13,8 +8,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Trophy, BrainCircuit, Star, Users } from "lucide-react";
-import { useGetQuizResultsQuery, type QuizResult } from "@/Redux/api/quizApi";
+import { Loader2, Trophy, BrainCircuit,  Users } from "lucide-react";
+import { useGetQuizResultsQuery, } from "@/Redux/api/quizApi";
 
 export default function Leaderboard() {
   const { data, isLoading, error } = useGetQuizResultsQuery();
@@ -34,10 +29,11 @@ export default function Leaderboard() {
     return (
       <div className="flex justify-center items-center min-h-[60vh] bg-gray-900">
         <div className="bg-red-900/20 border border-red-500/30 text-red-400 p-6 rounded-lg max-w-md text-center">
-           <p className="font-semibold text-xl">❌ An Error Occurred</p>
-           <p className="mt-2 text-red-400/80">
-             Something went wrong while fetching the leaderboard data. Please try again later.
-           </p>
+          <p className="font-semibold text-xl">❌ An Error Occurred</p>
+          <p className="mt-2 text-red-400/80">
+            Something went wrong while fetching the leaderboard data. Please try
+            again later.
+          </p>
         </div>
       </div>
     );
@@ -46,9 +42,13 @@ export default function Leaderboard() {
   if (!data || data.length === 0) {
     return (
       <div className="text-center text-gray-400 mt-20 p-4">
-         <Trophy className="mx-auto h-12 w-12 text-gray-600" />
-         <h2 className="mt-4 text-2xl font-semibold text-white">No Data Available</h2>
-         <p className="mt-2">There is currently no leaderboard data to display.</p>
+        <Trophy className="mx-auto h-12 w-12 text-gray-600" />
+        <h2 className="mt-4 text-2xl font-semibold text-white">
+          No Data Available
+        </h2>
+        <p className="mt-2">
+          There is currently no leaderboard data to display.
+        </p>
       </div>
     );
   }
@@ -72,7 +72,11 @@ export default function Leaderboard() {
           🥉 #{rank}
         </Badge>
       );
-    return <Badge variant="outline" className="border-slate-600 text-slate-300">#{rank}</Badge>;
+    return (
+      <Badge variant="outline" className="border-slate-600 text-slate-300">
+        #{rank}
+      </Badge>
+    );
   };
 
   return (
@@ -95,10 +99,15 @@ export default function Leaderboard() {
             <CardHeader className="p-6 border-b border-slate-700/50">
               <CardTitle className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div className="flex items-center gap-3">
-                    <BrainCircuit className="w-8 h-8 text-teal-400" />
-                    <span className="text-xl md:text-2xl font-bold text-slate-100">{quiz.quizTitle}</span>
+                  <BrainCircuit className="w-8 h-8 text-teal-400" />
+                  <span className="text-xl md:text-2xl font-bold text-slate-100">
+                    {quiz.quizTitle}
+                  </span>
                 </div>
-                <Badge variant="secondary" className="bg-teal-400/10 mx-10 text-teal-300 border border-teal-400/20 px-3 py-1 text-sm">
+                <Badge
+                  variant="secondary"
+                  className="bg-teal-400/10 mx-10 text-teal-300 border border-teal-400/20 px-3 py-1 text-sm"
+                >
                   Class: {quiz._id.class}
                 </Badge>
               </CardTitle>
@@ -107,51 +116,97 @@ export default function Leaderboard() {
             <CardContent className="p-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-center">
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
-                    <h3 className="text-sm font-medium text-slate-400 flex items-center justify-center gap-2"><Users size={16}/>Total Students</h3>
-                    <p className="text-2xl font-semibold text-white mt-1">{quiz.totalStudents}</p>
+                  <h3 className="text-sm font-medium text-slate-400 flex items-center justify-center gap-2">
+                    <Users size={16} />
+                    Total Students
+                  </h3>
+                  <p className="text-2xl font-semibold text-white mt-1">
+                    {quiz.totalStudents}
+                  </p>
                 </div>
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
-                    <h3 className="text-sm font-medium text-slate-400">Average Score</h3>
-                    <p className="text-2xl font-semibold text-cyan-400 mt-1">{quiz.averagePercentage.toFixed(1)}%</p>
+                  <h3 className="text-sm font-medium text-slate-400">
+                    Total Marks
+                  </h3>
+                  <p className="text-2xl font-semibold text-cyan-400 mt-1">
+                    {quiz?.totalQuestions}
+                  </p>
+                </div>
+                
+                
+                <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                  <h3 className="text-sm font-medium text-slate-400">
+                    Highest Score
+                  </h3>
+                  <p className="text-2xl font-semibold text-green-400 mt-1">
+                    {quiz.highestPercentage.toFixed(1)}%
+                  </p>
                 </div>
                 <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
-                    <h3 className="text-sm font-medium text-slate-400">Highest Score</h3>
-                    <p className="text-2xl font-semibold text-green-400 mt-1">{quiz.highestPercentage.toFixed(1)}%</p>
+                  <h3 className="text-sm font-medium text-slate-400">
+                    Average Score
+                  </h3>
+                  <p className="text-2xl font-semibold text-cyan-400 mt-1">
+                    {quiz.averagePercentage.toFixed(1)}%
+                  </p>
                 </div>
-                <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
-                    <h3 className="text-sm font-medium text-slate-400">Lowest Score</h3>
-                    <p className="text-2xl font-semibold text-red-400 mt-1">{quiz.lowestPercentage.toFixed(1)}%</p>
-                </div>
+                {/* <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                  <h3 className="text-sm font-medium text-slate-400">
+                    Lowest Score
+                  </h3>
+                  <p className="text-2xl font-semibold text-red-400 mt-1">
+                    {quiz.lowestPercentage.toFixed(1)}%
+                  </p>
+                </div> */}
               </div>
 
               {quiz.students?.length ? (
                 <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                        <TableRow className="border-b-slate-700 hover:bg-transparent">
-                            <TableHead className="w-[100px] text-center text-slate-400 uppercase tracking-wider">Rank</TableHead>
-                            <TableHead className="text-slate-400 uppercase tracking-wider">Name</TableHead>
-                            <TableHead className="text-center text-slate-400 uppercase tracking-wider">Marks</TableHead>
-                            <TableHead className="text-center text-slate-400 uppercase tracking-wider">Percentage</TableHead>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="border-b-slate-700 hover:bg-transparent">
+                        <TableHead className="w-[100px] text-center text-slate-400 uppercase tracking-wider">
+                          Rank
+                        </TableHead>
+                        <TableHead className="text-slate-400 uppercase tracking-wider">
+                          Name
+                        </TableHead>
+                        <TableHead className="text-center text-slate-400 uppercase tracking-wider">
+                          Marks
+                        </TableHead>
+                        <TableHead className="text-center text-slate-400 uppercase tracking-wider">
+                          Percentage
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {quiz.students.map((student, index) => (
+                        <TableRow
+                          key={student._id}
+                          className="border-b-slate-800 hover:bg-slate-700/50 transition-colors"
+                        >
+                          <TableCell className="text-center font-medium text-lg">
+                            {getRankBadge(index + 1)}
+                          </TableCell>
+                          <TableCell className="font-medium text-slate-200">
+                            {student.name}
+                          </TableCell>
+                          <TableCell className="text-center text-slate-300">
+                            {student.marks}
+                          </TableCell>
+                          <TableCell className="text-center font-semibold text-teal-300">
+                            {student.percentage.toFixed(2)}%
+                          </TableCell>
                         </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        {quiz.students.map((student, index) => (
-                            <TableRow key={student._id} className="border-b-slate-800 hover:bg-slate-700/50 transition-colors">
-                            <TableCell className="text-center font-medium text-lg">
-                                {getRankBadge(index + 1)}
-                            </TableCell>
-                            <TableCell className="font-medium text-slate-200">{student.name}</TableCell>
-                            <TableCell className="text-center text-slate-300">{student.marks}</TableCell>
-                            <TableCell className="text-center font-semibold text-teal-300">{student.percentage.toFixed(2)}%</TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               ) : (
                 <div className="text-center py-8">
-                    <p className="text-slate-500">No student performance data available for this quiz.</p>
+                  <p className="text-slate-500">
+                    No student performance data available for this quiz.
+                  </p>
                 </div>
               )}
             </CardContent>
