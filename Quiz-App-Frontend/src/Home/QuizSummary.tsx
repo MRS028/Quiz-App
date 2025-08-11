@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { resetQuiz } from "@/Redux/features/quizSlices";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { Link, useNavigate } from "react-router-dom";
+import { MdLeaderboard } from "react-icons/md";
 import {
   Check,
   X,
@@ -135,43 +136,46 @@ export default function QuizSummary() {
     });
     navigate("/");
   };
+  const handleRank = () => {
+    navigate("/leaderboard");
+  };
 
- const handleSubmitResultToServer = async () => {
-  if (!currentSessionId || isSubmitting) return;
-  
-  setIsSubmitting(true);
-  try {
-    const resultData = {
-      marks: correctAnswers,
-      total: totalQuestions,
-      percentage,
-      answers: userAnswers
-    };
+  const handleSubmitResultToServer = async () => {
+    if (!currentSessionId || isSubmitting) return;
 
-    // console.log("Submitting to:", `/quiz-sessions/${currentSessionId}/submit`);
-    // console.log("Submitting data:", resultData);
-// @ts-ignore
-    const response = await submitQuizResult({
-      sessionId: currentSessionId, 
-      result: resultData           
-    }).unwrap();
+    setIsSubmitting(true);
+    try {
+      const resultData = {
+        marks: correctAnswers,
+        total: totalQuestions,
+        percentage,
+        answers: userAnswers,
+      };
 
-    // console.log("Result submitted successfully:", response);
-    localStorage.removeItem("quizSessionId");
-  } catch (error: any) {
-    console.error("Full error details:", {
-      status: error.status,
-      data: error.data,
-      originalError: error
-    });
-    
-    if (error.status === 400) {
-      console.error("Validation error details:", error.data);
+      // console.log("Submitting to:", `/quiz-sessions/${currentSessionId}/submit`);
+      // console.log("Submitting data:", resultData);
+      // @ts-ignore
+      const response = await submitQuizResult({
+        sessionId: currentSessionId,
+        result: resultData,
+      }).unwrap();
+
+      // console.log("Result submitted successfully:", response);
+      localStorage.removeItem("quizSessionId");
+    } catch (error: any) {
+      console.error("Full error details:", {
+        status: error.status,
+        data: error.data,
+        originalError: error,
+      });
+
+      if (error.status === 400) {
+        console.error("Validation error details:", error.data);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   useEffect(() => {
     const storedSessionId = localStorage.getItem("quizSessionId");
@@ -281,7 +285,7 @@ export default function QuizSummary() {
               </ul>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="grid md:grid-cols-2 sm:flex-row gap-4">
               <Button
                 onClick={() => navigate("/explanation")}
                 className="flex-1 bg-teal-600 hover:bg-teal-700 text-black font-bold py-6 text-base"
@@ -294,6 +298,13 @@ export default function QuizSummary() {
                 className="flex-1 border-slate-600 hover:bg-slate-700 hover:text-teal-400 text-gray-900 font-bold py-6 text-base"
               >
                 <RotateCcw className="w-5 h-5 mr-2" /> Try Another Quiz
+              </Button>
+              <Button
+                onClick={handleRank}
+                variant="outline"
+                className="flex-1 border-slate-600 hover:bg-slate-700 hover:text-teal-400 text-gray-900 font-bold py-6 text-base"
+              >
+                <MdLeaderboard className="w-5 h-5 mr-2" /> See Leaderboard
               </Button>
             </div>
           </div>
