@@ -218,8 +218,8 @@ export default function QuizControl() {
       <div className="space-y-3">
         <div className="flex justify-between items-center text-sm font-medium text-gray-200">
           <span>Progress</span>
-          <span>
-            Question {currentQuestionIndex + 1} of {questions.length}
+          <span >
+            Question <span className="text-red-500">{currentQuestionIndex + 1}</span> of <span className="text-red-500">{questions.length}</span>
           </span>
         </div>
         <div className="w-full bg-slate-700 rounded-full h-2.5">

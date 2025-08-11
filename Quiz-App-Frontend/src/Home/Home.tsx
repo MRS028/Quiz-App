@@ -6,6 +6,7 @@ import AddQuiz from "./AddQuiz";
 import AllQuiz from "./AllQuiz";
 import { Rocket, Award, Clock, BarChart2, Sparkles } from "lucide-react";
 import useScrollToTop from "@/hooks/useScrollToTop";
+import { useRef } from "react";
 
 // Fake data for stats (Unchanged)
 const quizStats = [
@@ -17,12 +18,14 @@ const quizStats = [
 
 export default function Home() {
   useScrollToTop();
-  const navigate = useNavigate();
+   const allQuizRef = useRef<HTMLDivElement | null>(null);
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Logic is completely unchanged
   const handleStartQuiz = () => {
-    navigate("/quiz");
+    // navigate("/quiz");
+   allQuizRef.current.scrollIntoView({ behavior: "smooth" });
     dispatch(resetQuiz());
   };
 
@@ -118,7 +121,7 @@ export default function Home() {
         </section>
 
         {/* Quiz Management Section */}
-        <section className="max-w-7xl w-full">
+        <section className="max-w-7xl w-full" ref={allQuizRef}>
           {/* The AllQuiz component will seamlessly fit into this design */}
           <AllQuiz />
         </section>

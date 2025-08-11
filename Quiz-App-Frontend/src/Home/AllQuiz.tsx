@@ -101,9 +101,9 @@ const AllQuiz = () => {
     <div className=" max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-3">
-          <BookOpen className="w-8 h-8 text-teal-400" />
-          <h2 className="text-3xl font-bold text-gray-100">
-            Choose Your Challenge
+          <BookOpen className="w-8 h-8 mt-2 text-teal-400" />
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-100">
+            Choose One
           </h2>
         </div>
         <Button
