@@ -13,7 +13,6 @@ app.use(
   cors({
     origin: ["http://localhost:5173", "https://testquizapp28.netlify.app"],
     credentials: true,
-
   })
 );
 
@@ -22,13 +21,13 @@ let isConnected = false;
 
 async function connectToDB() {
   if (isConnected) return;
-  
+
   const DB_URI = process.env.DB_URI;
   if (!DB_URI) {
     console.error("❌ MongoDB connection string (DB_URI) not found in .env");
     throw new Error("MongoDB URI missing");
   }
-  
+
   await mongoose.connect(DB_URI);
   isConnected = true;
   console.log("✅ Connected to MongoDB");
@@ -64,7 +63,8 @@ const quizSchema = new mongoose.Schema<QuizDocument>(
   { timestamps: true }
 );
 
-const Quiz = mongoose.models.Quiz || 
+const Quiz =
+  mongoose.models.Quiz ||
   mongoose.model<QuizDocument>("Quiz", quizSchema, "quizzes");
 
 interface QuizSessionDocument extends mongoose.Document {
@@ -80,10 +80,10 @@ interface QuizSessionDocument extends mongoose.Document {
 
 const quizSessionSchema = new mongoose.Schema<QuizSessionDocument>(
   {
-    quizId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "Quiz", 
-      required: true 
+    quizId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Quiz",
+      required: true,
     },
     name: { type: String, required: true },
     class: { type: String, required: true },
@@ -95,8 +95,13 @@ const quizSessionSchema = new mongoose.Schema<QuizSessionDocument>(
   { timestamps: true }
 );
 
-const QuizSession = mongoose.models.QuizSession || 
-  mongoose.model<QuizSessionDocument>("QuizSession", quizSessionSchema, "quiz_sessions");
+const QuizSession =
+  mongoose.models.QuizSession ||
+  mongoose.model<QuizSessionDocument>(
+    "QuizSession",
+    quizSessionSchema,
+    "quiz_sessions"
+  );
 
 // Middleware
 app.use(async (_req: Request, _res: Response, next: NextFunction) => {
@@ -123,9 +128,11 @@ app.post("/api/quizzes", async (req: Request, res: Response) => {
   try {
     const { title, description, questions } = req.body;
     if (!title || !questions?.length) {
-      return res.status(400).json({ error: "Title and questions are required" });
+      return res
+        .status(400)
+        .json({ error: "Title and questions are required" });
     }
-    
+
     const quiz = new Quiz({ title, description, questions });
     await quiz.save();
     res.status(201).json(quiz);
@@ -157,9 +164,11 @@ app.patch("/api/quizzes/:id", async (req: Request, res: Response) => {
   try {
     const { title, description, questions } = req.body;
     if (!title || !questions?.length) {
-      return res.status(400).json({ error: "Title and questions are required" });
+      return res
+        .status(400)
+        .json({ error: "Title and questions are required" });
     }
-    
+
     const quiz = await Quiz.findByIdAndUpdate(
       req.params.id,
       { title, description, questions, updatedAt: new Date() },
@@ -186,9 +195,11 @@ app.delete("/api/quizzes/:id", async (req: Request, res: Response) => {
 app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
   try {
     const { name, class: className, quizId } = req.body;
-    
+
     if (!name || !className || !quizId) {
-      return res.status(400).json({ error: "Name, class, and quizId are required" });
+      return res
+        .status(400)
+        .json({ error: "Name, class, and quizId are required" });
     }
 
     const quiz = await Quiz.findById(quizId);
@@ -203,7 +214,7 @@ app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
       marks: 0,
       total: quiz.questions.length,
       percentage: 0,
-      answers: Array(quiz.questions.length).fill(null)
+      answers: Array(quiz.questions.length).fill(null),
     });
 
     await session.save();
@@ -211,7 +222,7 @@ app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
     res.status(201).json({
       message: "Quiz session started successfully",
       sessionId: session._id,
-      totalQuestions: quiz.questions.length
+      totalQuestions: quiz.questions.length,
     });
   } catch (error) {
     console.error("Error starting quiz session:", error);
@@ -219,49 +230,117 @@ app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/api/quiz-sessions/:sessionId/submit", async (req: Request, res: Response) => {
-  try {
-    const { sessionId } = req.params;
-    const { marks, total, percentage, answers } = req.body;
-    // console.log(req.body)
+app.post(
+  "/api/quiz-sessions/:sessionId/submit",
+  async (req: Request, res: Response) => {
+    try {
+      const { sessionId } = req.params;
+      const { marks, total, percentage, answers } = req.body;
+      // console.log(req.body)
 
-    if (!marks || !total || !percentage || !answers) {
-      return res.status(400).json({ error: "All result fields are required" });
+      if (!marks || !total || !percentage || !answers) {
+        return res
+          .status(400)
+          .json({ error: "All result fields are required" });
+      }
+
+      const session = await QuizSession.findByIdAndUpdate(
+        sessionId,
+        {
+          marks,
+          total,
+          percentage,
+          answers,
+          updatedAt: new Date(),
+        },
+        { new: true }
+      );
+
+      if (!session) {
+        return res.status(404).json({ error: "Quiz session not found" });
+      }
+
+      res.json({
+        message: "Quiz results submitted successfully",
+        session,
+      });
+    } catch (error) {
+      console.error("Error submitting quiz results:", error);
+      res.status(500).json({ error: "Error submitting quiz results" });
     }
-
-    const session = await QuizSession.findByIdAndUpdate(
-      sessionId,
-      {
-        marks,
-        total,
-        percentage,
-        answers,
-        updatedAt: new Date()
-      },
-      { new: true }
-    );
-
-    if (!session) {
-      return res.status(404).json({ error: "Quiz session not found" });
-    }
-
-    res.json({
-      message: "Quiz results submitted successfully",
-      session
-    });
-  } catch (error) {
-    console.error("Error submitting quiz results:", error);
-    res.status(500).json({ error: "Error submitting quiz results" });
   }
-});
+);
 
 // Class-wise quiz sessions stats
 
+app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
+  try {
+    const results = await QuizSession.aggregate([
+      {
+        $group: {
+          _id: {
+            class: "$class",
+            quizId: "$quizId",
+            name: "$name",
+          },
+          marks: { $max: "$marks" },
+          percentage: { $max: "$percentage" },
+          total: { $first: "$total" },
+        },
+      },
+      {
+        $group: {
+          _id: { class: "$_id.class", quizId: "$_id.quizId" },
+          totalStudents: { $sum: 1 },
+          averagePercentage: { $avg: "$percentage" },
+          highestPercentage: { $max: "$percentage" },
+          lowestPercentage: { $min: "$percentage" },
+          students: {
+            $push: {
+              name: "$_id.name",
+              marks: "$marks",
+              percentage: "$percentage",
+              total: "$total",
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "quizzes",
+          localField: "_id.quizId",
+          foreignField: "_id",
+          as: "quizInfo",
+        },
+      },
+      { $unwind: "$quizInfo" },
 
+      {
+        $addFields: {
+          quizTitle: "$quizInfo.title",
+        },
+      },
+      {
+        $set: {
+          students: {
+            $sortArray: { input: "$students", sortBy: { marks: -1 } },
+          },
+        },
+      },
+      { $sort: { "_id.class": 1, "_id.quizId": 1 } },
+      {
+        $project: {
+          quizInfo: 0,
+        },
+      },
+    ]);
 
-
-
-
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching class-wise quiz stats:", error);
+    res.status(500).json({ error: "Error fetching class-wise quiz stats" });
+  }
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
