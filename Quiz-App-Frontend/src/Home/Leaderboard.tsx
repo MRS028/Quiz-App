@@ -28,7 +28,7 @@ export default function Leaderboard() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] bg-gray-900">
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
         <div className="bg-red-900/20 border border-red-500/30 text-red-400 p-6 rounded-lg max-w-md text-center">
           <p className="font-semibold text-xl">❌ An Error Occurred</p>
           <p className="mt-2 text-red-400/80">
@@ -130,7 +130,8 @@ export default function Leaderboard() {
                     Total Marks
                   </h3>
                   <p className="text-2xl font-semibold text-cyan-400 mt-1">
-                    {quiz?.totalQuestions}
+                   {/* @ts-ignore */}
+                    {quiz?.totalQuestions }  
                   </p>
                 </div>
 
@@ -201,6 +202,7 @@ export default function Leaderboard() {
                             {student.percentage.toFixed(2)}%
                           </TableCell>
                           <TableCell className="text-center font-semibold text-slate-300">
+                            {/* @ts-ignore */}
                             {student.dateBD}
                           </TableCell>
                         </TableRow>

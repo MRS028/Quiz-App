@@ -7,7 +7,6 @@ import AllQuiz from "./AllQuiz";
 import { Rocket, Award, Clock, BarChart2, Sparkles } from "lucide-react";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { useRef } from "react";
-import Leaderboard from "./Leaderboard";
 
 // Fake data for stats (Unchanged)
 const quizStats = [
@@ -26,6 +25,8 @@ export default function Home() {
   // Logic is completely unchanged
   const handleStartQuiz = () => {
     // navigate("/quiz");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
    allQuizRef.current.scrollIntoView({ behavior: "smooth" });
     dispatch(resetQuiz());
   };
