@@ -140,6 +140,7 @@ app.post("/api/quizzes", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error creating quiz" });
   }
 });
+//get quiz route
 
 app.get("/api/quizzes", async (_req: Request, res: Response) => {
   try {
@@ -159,6 +160,8 @@ app.get("/api/quizzes/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error fetching quiz" });
   }
 });
+
+//quiz update route but not implemented yet
 
 app.patch("/api/quizzes/:id", async (req: Request, res: Response) => {
   try {
@@ -181,6 +184,8 @@ app.patch("/api/quizzes/:id", async (req: Request, res: Response) => {
   }
 });
 
+//quiz delete route but not implemented yet
+
 app.delete("/api/quizzes/:id", async (req: Request, res: Response) => {
   try {
     const quiz = await Quiz.findByIdAndDelete(req.params.id);
@@ -191,7 +196,7 @@ app.delete("/api/quizzes/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Quiz Session Endpoints
+// Quiz Session/submit Endpoints
 app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
   try {
     const { name, class: className, quizId } = req.body;
@@ -229,6 +234,8 @@ app.post("/api/quiz-sessions", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error starting quiz session" });
   }
 });
+
+//quiz submit post route
 
 app.post(
   "/api/quiz-sessions/:sessionId/submit",
@@ -271,8 +278,7 @@ app.post(
   }
 );
 
-// Class-wise quiz sessions stats
-
+// quiz submission data and leaderboard
 app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
   try {
     const results = await QuizSession.aggregate([
