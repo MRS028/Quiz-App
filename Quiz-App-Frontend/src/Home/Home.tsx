@@ -43,10 +43,12 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center">
         {/* Hero Section */}
         <section className="max-w-4xl w-full text-center space-y-8 mb-20 md:mb-24">
+           {/* <h1 className="text-teal-300 text-2xl font-bold">QuizMind</h1> */}
           <div className="inline-flex items-center justify-center px-4 py-2 bg-teal-900/50 border border-teal-500/30 rounded-full">
             <Sparkles className="w-5 h-5 text-teal-400 mr-2" />
             <span className="text-teal-300 font-medium">New Feature: Daily Challenges</span>
           </div>
+         
           
           <h1 className="text-4xl md:text-6xl font-extrabold text-gray-50 leading-tight">
             Test Your Knowledge <br />
