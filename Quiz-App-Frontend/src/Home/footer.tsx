@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="w-full  bg-slate-900 border-t border-slate-700/50 py-6 px-4">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
         <p className="text-sm text-gray-400">
-          &copy; {new Date().getFullYear()} QuizVerse. All rights reserved.
+          &copy; {new Date().getFullYear()} QuizMind. All rights reserved.
         </p>
         <a 
           href="https://github.com/MRS028" 

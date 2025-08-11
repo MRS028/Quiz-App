@@ -33,8 +33,8 @@ export default function Questions() {
 
   return (
     <div className="flex justify-center items-start  mt-10 md:mt-16 px-4 mb-10">
-      <Card className="w-full max-w-3xl mx-auto p-4 md:p-8 bg-gray-700 border border-slate-700 shadow-2xl shadow-black/20 backdrop-blur-sm">
-        <CardHeader className="mb-4">
+      <Card className="w-full max-w-3xl mx-auto p- md:p-8 bg-gray-700 border border-slate-700 shadow-2xl shadow-black/20 backdrop-blur-sm">
+        <CardHeader className="mt-4 mb-2">
           <CardTitle className="flex items-start gap-4 text-xl md:text-2xl text-gray-100 font-bold">
             <span className="flex items-center justify-center  bg-teal-500 text-slate-900 rounded-full font-bold w-8 h-8 md:w-10 md:h-10 text-lg flex-shrink-0 mt-1">
               {currentQuestionIndex + 1}
@@ -85,7 +85,7 @@ export default function Questions() {
         </CardContent>
 
         {/* QuizControl component is placed in a visually distinct footer area */}
-        <div className="mt-8 border-t border-slate-700 pt-6">
+        <div className="mt-8 border-t border-slate-700 pt-6 px-3">
           <QuizControl />
         </div>
       </Card>

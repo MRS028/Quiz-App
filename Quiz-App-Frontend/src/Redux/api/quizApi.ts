@@ -5,6 +5,13 @@ export const quizApi = createApi({
   baseQuery: fetchBaseQuery({
     // baseUrl: "http://localhost:5000/api",
     baseUrl: import.meta.env.VITE_API_BASE_URL,
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ["Quizzes", "user", "admin"],
   endpoints: (builder) => ({
@@ -35,8 +42,28 @@ export const quizApi = createApi({
       }),
       invalidatesTags: ["Quizzes"],
     }),
-    
+    startQuizSession: builder.mutation({
+      query: (sessionData) => ({
+        url: "/quiz-sessions",
+        method: "POST",
+        body: sessionData,
+      }),
+    }),
+    submitQuizResult: builder.mutation({
+      query: ({ sessionId, result }) => ({
+        url: `quiz-sessions/${sessionId}/submit`, // Note the URL pattern
+        method: "POST",
+        body: result,
+      }),
+    }),
   }),
 });
 
-export const { useAddQuizMutation, useGetAllQuizzesQuery } = quizApi;
+export const {
+  useAddQuizMutation,
+  useGetAllQuizzesQuery,
+  useUpdateQuizMutation,
+  useDeleteQuizMutation,
+  useStartQuizSessionMutation,
+  useSubmitQuizResultMutation,
+} = quizApi;

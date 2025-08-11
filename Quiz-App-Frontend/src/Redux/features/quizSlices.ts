@@ -87,9 +87,12 @@ export const {
   previousQuestion,
   completeQuiz,
   resetQuiz,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   // @ts-ignore
    setQuiz, // @ts-ignore
   setTimeUp,
 } = quizSlice.actions;
+
 
 export default quizSlice.reducer;

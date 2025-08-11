@@ -3,6 +3,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { quizSlice } from "./features/quizSlices";
 // import timerReducer from "@/Redux/features/timerSlice";
 import { quizApi } from "./api/quizApi";
+import quizSessionReducer from "./features/quizSessionSlice";
+
 
 const loadState = () => {
   try {
@@ -28,6 +30,7 @@ export const store = configureStore({
   reducer: {
     quiz: quizSlice.reducer,
     // timer: timerReducer,
+     quizSession: quizSessionReducer,
     [quizApi.reducerPath]: quizApi.reducer,
   },
   preloadedState: {

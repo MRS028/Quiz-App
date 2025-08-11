@@ -118,7 +118,7 @@ export default function Home() {
         </section>
 
         {/* Quiz Management Section */}
-        <section className="max-w-5xl w-full">
+        <section className="max-w-7xl w-full">
           {/* The AllQuiz component will seamlessly fit into this design */}
           <AllQuiz />
         </section>
