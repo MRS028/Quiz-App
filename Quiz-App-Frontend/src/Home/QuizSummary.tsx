@@ -248,7 +248,7 @@ export default function QuizSummary() {
                 icon={<Check />}
                 label="Correct"
                 value={correctAnswers}
-                bgColor="bg-emerald-500/20 text-emerald-300"
+                bgColor="bg-emerald-600/20 text-emerald-300"
               />
               <StatCard
                 icon={<X />}
@@ -285,7 +285,7 @@ export default function QuizSummary() {
               </ul>
             </div>
 
-            <div className="grid md:grid-cols-2 sm:flex-row gap-4">
+            <div className="grid  sm:flex-row gap-4">
               <Button
                 onClick={() => navigate("/explanation")}
                 className="flex-1 bg-teal-600 hover:bg-teal-700 text-black font-bold py-6 text-base"
@@ -302,7 +302,7 @@ export default function QuizSummary() {
               <Button
                 onClick={handleRank}
                 variant="outline"
-                className="flex-1 border-slate-600 hover:bg-slate-700 hover:text-teal-400 text-gray-900 font-bold py-6 text-base"
+                className="flex-1 border-slate-600 text-white bg-green-700 hover:bg-slate-700 hover:text-teal-400  font-bold py-6 text-base"
               >
                 <MdLeaderboard className="w-5 h-5 mr-2" /> See Leaderboard
               </Button>

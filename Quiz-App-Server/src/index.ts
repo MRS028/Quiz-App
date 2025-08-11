@@ -476,7 +476,7 @@ app.get("/api/quiz-sessions/classwise", async (req: Request, res: Response) => {
         },
       },
       { $unwind: "$quizInfo" },
-      { $sort: { "quizInfo.createdAt": 1  } },
+      { $sort: { quizDate : -1  } },
       {
         $project: {
           quizInfo: 0,
